@@ -128,7 +128,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 /* MANDART */
 .mg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
 .mb{display:grid;grid-template-columns:repeat(3,1fr);gap:1px}
-.mc{display:flex;align-items:center;justify-content:center;text-align:center;min-height:44px;padding:3px;font-size:8.5px;line-height:1.3;border-radius:3px;word-break:keep-all;border:0.5px solid var(--bd);background:var(--sf2);color:var(--tx3)}
+.mc{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:62px;padding:4px 3px;font-size:8.5px;line-height:1.3;border-radius:3px;word-break:keep-all;border:0.5px solid var(--bd);background:var(--sf2);color:var(--tx3)}
 .ms1{background:rgba(94,82,170,.12);color:#8878c8;border-color:rgba(94,82,170,.22)}
 .ms2{background:rgba(61,140,100,.12);color:#50a878;border-color:rgba(61,140,100,.22)}
 .ms3{background:rgba(176,90,69,.12);color:#c07060;border-color:rgba(176,90,69,.22)}
@@ -240,15 +240,23 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 <div class="vw" id="vw-mandart">
   <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tx3);margin-bottom:8px">🎯 만다라트 — 연 1,000만원 저축</div>
   <div class="mg">
-    <div class="mb"><div class="mc ms1">단가 3만↑</div><div class="mc ms1">클라 유지</div><div class="mc ms1">퀄리티 유지</div><div class="mc ms1">하루 5~6개</div><div class="mc ml1">💰영상외주</div><div class="mc ms1">재의뢰 유도</div><div class="mc ms1">수입 기록</div><div class="mc ms1">주 5~6일</div><div class="mc ms1">버퍼 확보</div></div>
-    <div class="mb"><div class="mc ms2">네이버클립</div><div class="mc ms2">쓰레드</div><div class="mc ms2">쿠팡파트너스</div><div class="mc ms2">주 3~5개</div><div class="mc ml2">📱SNS·쿠팡</div><div class="mc ms2">반응 분석</div><div class="mc ms2">계정 성장</div><div class="mc ms2">클릭 유도</div><div class="mc ms2">수익 테스트</div></div>
-    <div class="mb"><div class="mc ms3">꿀템 채널</div><div class="mc ms3">쇼츠 운영</div><div class="mc ms3">썸네일</div><div class="mc ms3">주 2~3개</div><div class="mc ml3">🎬유튜브</div><div class="mc ms3">포맷 분석</div><div class="mc ms3">구독 1000</div><div class="mc ms3">수익 연결</div><div class="mc ms3">루틴화</div></div>
-    <div class="mb"><div class="mc ms4">작업 선별</div><div class="mc ms4">카테고리</div><div class="mc ms4">PDF·링크</div><div class="mc ms4">디자인통일</div><div class="mc ml4">🗂포트폴리오</div><div class="mc ms4">6월완료</div><div class="mc ms4">자기소개</div><div class="mc ms4">클라제출용</div><div class="mc ms4">업데이트</div></div>
-    <div class="mb"><div class="mc mref1">💰영상외주</div><div class="mc mref2">📱SNS·쿠팡</div><div class="mc mref3">🎬유튜브</div><div class="mc mref4">🗂포트폴리오</div><div class="mc mcore">🎯연<br>1,000만원<br>저축</div><div class="mc mref5">📚공부·성장</div><div class="mc mref6">🖼미리캔버스</div><div class="mc mref7">💳돈관리</div><div class="mc mref8">🌿루틴·생활</div></div>
-    <div class="mb"><div class="mc ms5">피그마</div><div class="mc ms5">클로드 활용</div><div class="mc ms5">효율화</div><div class="mc ms5">주 3회</div><div class="mc ml5">📚공부·성장</div><div class="mc ms5">단축키</div><div class="mc ms5">실무 적용</div><div class="mc ms5">자료 정리</div><div class="mc ms5">속도 개선</div></div>
-    <div class="mb"><div class="mc ms6">PNG 소스</div><div class="mc ms6">주 2~3개</div><div class="mc ms6">스타일분석</div><div class="mc ms6">키워드</div><div class="mc ml6">🖼미리캔버스</div><div class="mc ms6">시즌콘텐츠</div><div class="mc ms6">수익확인</div><div class="mc ms6">데이터분석</div><div class="mc ms6">장기화</div></div>
-    <div class="mb"><div class="mc ms7">가계부</div><div class="mc ms7">고정지출확인</div><div class="mc ms7">용돈설정</div><div class="mc ms7">소비 제한</div><div class="mc ml7">💳돈관리</div><div class="mc ms7">자동저축</div><div class="mc ms7">월 83만↑</div><div class="mc ms7">추가저축</div><div class="mc ms7">지출피드백</div></div>
-    <div class="mb"><div class="mc ms8">9시 기상</div><div class="mc ms8">스케줄관리</div><div class="mc ms8">운동루틴</div><div class="mc ms8">뉴스레터</div><div class="mc ml8">🌿루틴·생활</div><div class="mc ms8">집중환경</div><div class="mc ms8">루틴유지</div><div class="mc ms8">휴식 주1회</div><div class="mc ms8">일과정리</div></div>
+    <div class="mb"><div class="mc ms1">단가 3만↑</div><div class="mc ms1">클라 유지</div><div class="mc ms1">퀄리티 유지</div><div class="mc ms1">하루 5~6개</div><div class="mc ml1" id="mcg_video">💰영상외주</div><div class="mc ms1">재의뢰 유도</div><div class="mc ms1">수입 기록</div><div class="mc ms1">주 5~6일</div><div class="mc ms1">버퍼 확보</div></div>
+    <div class="mb"><div class="mc ms2">네이버클립</div><div class="mc ms2">쓰레드</div><div class="mc ms2">쿠팡파트너스</div><div class="mc ms2">주 3~5개</div><div class="mc ml2" id="mcg_sns">📱SNS·쿠팡</div><div class="mc ms2">반응 분석</div><div class="mc ms2">계정 성장</div><div class="mc ms2">클릭 유도</div><div class="mc ms2">수익 테스트</div></div>
+    <div class="mb"><div class="mc ms3">꿀템 채널</div><div class="mc ms3">쇼츠 운영</div><div class="mc ms3">썸네일</div><div class="mc ms3">주 2~3개</div><div class="mc ml3" id="mcg_youtube">🎬유튜브</div><div class="mc ms3">포맷 분석</div><div class="mc ms3">구독 1000</div><div class="mc ms3">수익 연결</div><div class="mc ms3">루틴화</div></div>
+    <div class="mb"><div class="mc ms4">작업 선별</div><div class="mc ms4">카테고리</div><div class="mc ms4">PDF·링크</div><div class="mc ms4">디자인통일</div><div class="mc ml4" id="mcg_portfolio">🗂포트폴리오</div><div class="mc ms4">6월완료</div><div class="mc ms4">자기소개</div><div class="mc ms4">클라제출용</div><div class="mc ms4">업데이트</div></div>
+    <div class="mb"><div class="mc mref1">💰영상외주</div><div class="mc mref2">📱SNS·쿠팡</div><div class="mc mref3">🎬유튜브</div><div class="mc mref4">🗂포트폴리오</div><div class="mc mcore" id="mcg_core">🎯연<br>1,000만원<br>저축</div><div class="mc mref5">📚공부·성장</div><div class="mc mref6">🖼미리캔버스</div><div class="mc mref7">💳돈관리</div><div class="mc mref8">🌿루틴·생활</div></div>
+    <div class="mb"><div class="mc ms5">피그마</div><div class="mc ms5">클로드 활용</div><div class="mc ms5">효율화</div><div class="mc ms5">주 3회</div><div class="mc ml5" id="mcg_study">📚공부·성장</div><div class="mc ms5">단축키</div><div class="mc ms5">실무 적용</div><div class="mc ms5">자료 정리</div><div class="mc ms5">속도 개선</div></div>
+    <div class="mb"><div class="mc ms6">PNG 소스</div><div class="mc ms6">주 2~3개</div><div class="mc ms6">스타일분석</div><div class="mc ms6">키워드</div><div class="mc ml6" id="mcg_canvas">🖼미리캔버스</div><div class="mc ms6">시즌콘텐츠</div><div class="mc ms6">수익확인</div><div class="mc ms6">데이터분석</div><div class="mc ms6">장기화</div></div>
+    <div class="mb"><div class="mc ms7">가계부</div><div class="mc ms7">고정지출확인</div><div class="mc ms7">용돈설정</div><div class="mc ms7">소비 제한</div><div class="mc ml7" id="mcg_money">💳돈관리</div><div class="mc ms7">자동저축</div><div class="mc ms7">월 83만↑</div><div class="mc ms7">추가저축</div><div class="mc ms7">지출피드백</div></div>
+    <div class="mb"><div class="mc ms8">9시 기상</div><div class="mc ms8">스케줄관리</div><div class="mc ms8">운동루틴</div><div class="mc ms8">뉴스레터</div><div class="mc ml8" id="mcg_life">🌿루틴·생활</div><div class="mc ms8">집중환경</div><div class="mc ms8">루틴유지</div><div class="mc ms8">휴식 주1회</div><div class="mc ms8">일과정리</div></div>
+  </div>
+  <!-- 목표 달성률 요약 카드 -->
+  <div class="card" style="margin-top:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+      <div style="font-size:13px;font-weight:700;color:var(--tx)">🎯 목표 달성률 현황</div>
+      <div style="font-size:10px;color:var(--tx3)" id="mandartMonthLbl"></div>
+    </div>
+    <div id="mandartSummary" style="display:flex;flex-direction:column;gap:7px"></div>
   </div>
 </div>
 
@@ -520,46 +528,61 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 
   <!-- 저축통장 관리 -->
   <div class="slbl">🐷 저축통장 관리</div>
-  <div class="card" style="margin-bottom:10px">
-    <!-- 총 저축 요약 -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+  <!-- 총 요약 -->
+  <div class="card" style="margin-bottom:10px;border-left:3px solid var(--ac2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:3px">총 저축액</div>
         <div class="mono" style="font-size:24px;font-weight:500;color:var(--ac2)" id="savingTotal">₩0</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:11px;color:var(--tx3)">통장 수 <span class="mono" style="color:var(--tx2)" id="savingCount">0</span>개</div>
-        <div style="font-size:11px;color:var(--tx3);margin-top:2px">목표 달성률 <span class="mono" style="color:var(--ac2)" id="savingGoalPctB">0%</span></div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:2px">이번달 납입 목표 달성률 <span class="mono" style="color:var(--ac2)" id="savingMonthPct">0%</span></div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:2px">🎯 1,000만원 목표 달성률 <span class="mono" style="color:var(--ac2)" id="saving1000Pct">0%</span></div>
       </div>
     </div>
-    <!-- 저축통장 목록 -->
-    <div id="savingList" style="margin-bottom:10px"></div>
-    <!-- 추가 -->
-    <div style="padding-top:8px;border-top:1px solid var(--bd)">
-      <div style="font-size:10px;font-weight:700;color:var(--tx2);margin-bottom:7px">+ 저축통장 추가</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="g2">
-          <div>
-            <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">통장명</div>
-            <input class="inp" id="savingNameInp" placeholder="예: 적금, CMA..." style="width:100%;font-size:11px">
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">현재 잔액</div>
-            <input class="inp mono" id="savingBalInp" type="number" placeholder="잔액 (원)" style="width:100%;font-size:11px">
-          </div>
-        </div>
-        <div class="g2">
-          <div>
-            <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">목표 금액</div>
-            <input class="inp mono" id="savingGoalInp" type="number" placeholder="목표 (원)" style="width:100%;font-size:11px">
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 납입액</div>
-            <input class="inp mono" id="savingMonthlyInp" type="number" placeholder="월 납입 (원)" style="width:100%;font-size:11px">
-          </div>
-        </div>
-        <button class="btn btn-p btn-s" onclick="addSaving()" style="width:100%">+ 추가</button>
+    <!-- 이번달 월납입 목표 진행바 -->
+    <div style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:3px">
+        <span>이번달 납입 목표</span><span class="mono" id="savingMonthGoalLbl">₩0 / ₩0</span>
       </div>
+      <div class="pb" style="margin-bottom:8px"><div class="pf" id="savingMonthBar" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:3px">
+        <span>🎯 천만원 모으기</span><span class="mono" id="saving1000Lbl">₩0 / ₩10,000,000</span>
+      </div>
+      <div class="pb"><div class="pf" id="saving1000Bar" style="width:0%;background:var(--pu)"></div></div>
+    </div>
+  </div>
+  <!-- 저축통장 목록 -->
+  <div id="savingList" style="margin-bottom:10px"></div>
+  <!-- 추가 폼 -->
+  <div class="card" style="margin-bottom:10px">
+    <div onclick="toggleSavingForm()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
+      <span style="font-size:11px;font-weight:700;color:var(--tx2)">+ 저축통장 추가</span>
+      <span id="savingFormArrow" style="font-size:12px;color:var(--tx3);transition:transform .2s">▼</span>
+    </div>
+    <div id="savingFormBody" style="display:none;margin-top:12px;flex-direction:column;gap:6px">
+      <div class="g2">
+        <div>
+          <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">통장명</div>
+          <input class="inp" id="savingNameInp" placeholder="예: 적금, CMA..." style="width:100%;font-size:11px">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">현재 잔액</div>
+          <input class="inp mono" id="savingBalInp" type="number" placeholder="잔액 (원)" style="width:100%;font-size:11px">
+        </div>
+      </div>
+      <div class="g2">
+        <div>
+          <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">최종 목표 금액</div>
+          <input class="inp mono" id="savingGoalInp" type="number" placeholder="목표 (원)" style="width:100%;font-size:11px">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 납입 목표 금액</div>
+          <input class="inp mono" id="savingMonthlyInp" type="number" placeholder="월 목표 (원)" style="width:100%;font-size:11px">
+        </div>
+      </div>
+      <button class="btn btn-p btn-s" onclick="addSaving()" style="width:100%">+ 추가</button>
     </div>
   </div>
 
@@ -1084,6 +1107,10 @@ function sw(v,btn){
   if(v==='plan')     renderTodos();
   if(v==='budget')   {renderBudget();renderCards();}
   if(v==='schedule') renderSch();
+  if(v==='mandart'){
+    // 캐시가 없으면 먼저 로드 후 렌더
+    if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
+  }
 }
 
 // ── TODAY ────────────────────────────────────────────────
@@ -1092,6 +1119,33 @@ const ROUTINES=[
   {id:'work',lbl:'작업 시작',tag:'업무'},{id:'sns',lbl:'SNS 업로드',tag:'SNS'},
   {id:'study',lbl:'피그마/클로드 공부',tag:'성장'},{id:'ex',lbl:'운동',tag:'건강'},
   {id:'log',lbl:'수입 기록',tag:'돈관리'},{id:'sl',lbl:'일과 정리 취침',tag:'루틴'},
+  {id:'miriv',lbl:'미리캔버스 업로드',tag:'미리캔버스'},
+  {id:'yt',lbl:'유튜브 영상 업로드',tag:'유튜브'},
+  {id:'port',lbl:'포트폴리오 작업',tag:'포트폴리오'},
+];
+
+// 루틴 → 만다라트 목표 매핑
+const ROUTINE_MANDART_MAP={
+  wake:'life', news:'life', sl:'life', ex:'life',  // 루틴·생활
+  work:'video',                                      // 영상외주
+  sns:'sns',                                        // SNS·쿠팡
+  study:'study',                                     // 공부·성장
+  log:'money',                                       // 돈관리
+  miriv:'canvas',                                    // 미리캔버스
+  yt:'youtube',                                      // 유튜브
+  port:'portfolio',                                  // 포트폴리오
+};
+
+// 만다라트 8개 목표 정의
+const MANDART_GOALS=[
+  {id:'video', label:'💰 영상외주',  cls:'ms1'},
+  {id:'sns',   label:'📱 SNS·쿠팡', cls:'ms2'},
+  {id:'youtube',label:'🎬 유튜브',  cls:'ms3'},
+  {id:'portfolio',label:'🗂 포트폴리오',cls:'ms4'},
+  {id:'study', label:'📚 공부·성장',cls:'ms5'},
+  {id:'canvas',label:'🖼 미리캔버스',cls:'ms6'},
+  {id:'money', label:'💳 돈관리',   cls:'ms7'},
+  {id:'life',  label:'🌿 루틴·생활',cls:'ms8'},
 ];
 let ST={vc:0,inc:0,rt:{},memo:''};
 
@@ -1117,6 +1171,9 @@ function renderRoutines(){
       '성장':'background:#3a5a6e;color:#70c8e0',
       '건강':'background:#5e4030;color:#e89860',
       '돈관리':'background:#5a4a20;color:#d8b850',
+      '미리캔버스':'background:#3a4a6e;color:#70b8e8',
+      '유튜브':'background:#6e2a2a;color:#e88070',
+      '포트폴리오':'background:#4a3a6e;color:#b070e8',
     };
     const ts=tagColors[r.tag]||'background:var(--sf3);color:var(--tx2)';
     return`<div class="ri ${d?'on':''}" onclick="togR('${r.id}')"><div class="rck">${d?'✓':''}</div><div class="rtx" style="font-size:12px;flex:1;font-weight:500">${r.lbl}</div><span class="bg" style="${ts}">${r.tag}</span></div>`;
@@ -1141,7 +1198,17 @@ function updateInc(){
 function saveToday(){
   ST.memo=document.getElementById('memoInput').value;
   const all=S.g(K.daily)||{};
-  all[tdk()]={vc:ST.vc,inc:ST.inc,rt:ST.rt,memo:ST.memo,rs:Object.values(ST.rt).filter(Boolean).length,savedAt:kst()};
+  const existing=all[tdk()]||{};
+  // 기존 데이터와 병합 — 마지막 저장값 우선
+  all[tdk()]={
+    ...existing,
+    vc:ST.vc,
+    inc:ST.inc,
+    rt:ST.rt,
+    memo:ST.memo,
+    rs:Object.values(ST.rt).filter(Boolean).length,
+    savedAt:kst(),
+  };
   S.s(K.daily,all);
   toast('✓ 저장됐어요!');
   const b=document.getElementById('saveBtn');
@@ -1783,8 +1850,20 @@ function renderCards(){
 
 // ── 저축통장 관리 ────────────────────────────────────────
 const SAVING_KEY='ahyun_savings_v1';
+const SAVING_DEP_KEY='ahyun_saving_deposits_v1'; // 입금 내역
 function loadSavings(){return S.g(SAVING_KEY)||[];}
 function saveSavings(d){S.s(SAVING_KEY,d);}
+function loadDeposits(){return S.g(SAVING_DEP_KEY)||{};}
+function saveDeposits(d){S.s(SAVING_DEP_KEY,d);}
+
+function toggleSavingForm(){
+  const body=document.getElementById('savingFormBody');
+  const arrow=document.getElementById('savingFormArrow');
+  if(!body)return;
+  const isOpen=body.style.display==='flex';
+  body.style.display=isOpen?'none':'flex';
+  if(arrow)arrow.style.transform=isOpen?'':'rotate(180deg)';
+}
 
 function addSaving(){
   const name=document.getElementById('savingNameInp').value.trim();
@@ -1802,54 +1881,188 @@ function addSaving(){
 function deleteSaving(id){
   if(!confirm('이 저축통장을 삭제할까요?'))return;
   saveSavings(loadSavings().filter(x=>x.id!==id));
+  // 입금내역도 삭제
+  const dep=loadDeposits();delete dep[id];saveDeposits(dep);
   renderSavings();toast('삭제됐어요');
 }
 
-function editSavingBal(id){
+// 입금 추가
+function addDeposit(id){
+  const inp=document.getElementById('depInp_'+id);
+  const amt=parseInt(inp.value)||0;
+  if(!amt){toast('금액을 입력해주세요');return;}
+  // 저축통장 잔액 업데이트
   const savings=loadSavings();
   const s=savings.find(x=>x.id===id);if(!s)return;
-  const n=prompt('현재 잔액 수정:',s.bal);if(n===null)return;
-  const v=parseInt(n);if(isNaN(v))return;
-  s.bal=v;saveSavings(savings);renderSavings();toast('잔액 수정됐어요 ✓');
+  s.bal+=amt;
+  saveSavings(savings);
+  // 입금내역 저장
+  const dep=loadDeposits();
+  if(!dep[id])dep[id]=[];
+  const now=new Date();
+  const kstStr=`${now.getFullYear()}.${p2(now.getMonth()+1)}.${p2(now.getDate())}`;
+  dep[id].unshift({id:Date.now(),amt,date:kstStr});
+  saveDeposits(dep);
+  inp.value='';
+  renderSavings();toast(`+₩${amt.toLocaleString()} 입금됐어요 ✓`);
+}
+
+// 입금 내역 삭제
+function deleteDeposit(savingId,depId){
+  const dep=loadDeposits();
+  const savings=loadSavings();
+  const s=savings.find(x=>x.id===savingId);
+  const depItem=(dep[savingId]||[]).find(x=>x.id===depId);
+  if(s&&depItem){s.bal=Math.max(0,s.bal-depItem.amt);saveSavings(savings);}
+  if(dep[savingId])dep[savingId]=dep[savingId].filter(x=>x.id!==depId);
+  saveDeposits(dep);
+  renderSavings();toast('삭제됐어요');
+}
+
+// 입금 내역 수정
+function editDeposit(savingId,depId){
+  const dep=loadDeposits();
+  const savings=loadSavings();
+  const s=savings.find(x=>x.id===savingId);
+  const item=(dep[savingId]||[]).find(x=>x.id===depId);if(!item)return;
+  const newAmt=parseInt(prompt('금액 수정:',item.amt));if(isNaN(newAmt))return;
+  if(s){s.bal=Math.max(0,s.bal-item.amt+newAmt);saveSavings(savings);}
+  item.amt=newAmt;
+  saveDeposits(dep);
+  renderSavings();toast('수정됐어요 ✓');
+}
+
+// 통장 정보 수정 (이름/목표/월목표)
+function editSaving(id){
+  const savings=loadSavings();
+  const s=savings.find(x=>x.id===id);if(!s)return;
+  const n=prompt('통장명:',s.name);if(n===null)return;
+  const g=parseInt(prompt('최종 목표 금액:',s.goal));
+  const m=parseInt(prompt('월 납입 목표:',s.monthly));
+  s.name=n.trim()||s.name;
+  if(!isNaN(g))s.goal=g;
+  if(!isNaN(m))s.monthly=m;
+  saveSavings(savings);renderSavings();toast('수정됐어요 ✓');
 }
 
 function renderSavings(){
   const savings=loadSavings();
+  const dep=loadDeposits();
+  const now=new Date();
+  const thisMK=`${now.getFullYear()}-${p2(now.getMonth()+1)}`;
+
+  // 총액
   const total=savings.reduce((s,x)=>s+x.bal,0);
-  const goalTotal=savings.reduce((s,x)=>s+(x.goal||0),0);
-  const pct=goalTotal>0?Math.min(100,Math.round(total/goalTotal*100)):0;
   const el=document.getElementById('savingTotal');
-  if(el) el.textContent='₩'+total.toLocaleString();
+  if(el)el.textContent='₩'+total.toLocaleString();
   const ce=document.getElementById('savingCount');
-  if(ce) ce.textContent=savings.length;
-  const pe=document.getElementById('savingGoalPctB');
-  if(pe) pe.textContent=pct+'%';
+  if(ce)ce.textContent=savings.length;
+
+  // 이번달 납입 목표 달성률 (이번달 입금 합계 / 월목표 합계)
+  const monthGoalTotal=savings.reduce((s,x)=>s+(x.monthly||0),0);
+  let monthDepTotal=0;
+  savings.forEach(s=>{
+    (dep[s.id]||[]).forEach(d=>{
+      if(d.date&&d.date.startsWith(thisMK.replace('-','.')))monthDepTotal+=d.amt;
+    });
+  });
+  // 날짜 포맷이 2026.04.xx 형식이므로 맞게 비교
+  let monthDepTotal2=0;
+  savings.forEach(s=>{
+    (dep[s.id]||[]).forEach(d=>{
+      if(d.date){
+        const parts=d.date.split('.');
+        if(parts[0]===String(now.getFullYear())&&parts[1]===p2(now.getMonth()+1))monthDepTotal2+=d.amt;
+      }
+    });
+  });
+  const mPct=monthGoalTotal>0?Math.min(100,Math.round(monthDepTotal2/monthGoalTotal*100)):0;
+  const pe=document.getElementById('savingMonthPct');
+  if(pe)pe.textContent=mPct+'%';
+  const barEl=document.getElementById('savingMonthBar');
+  if(barEl){barEl.style.width=mPct+'%';barEl.className='pf'+(mPct>=100?' ':mPct<40?' d':' w');}
+  const lbl=document.getElementById('savingMonthGoalLbl');
+  if(lbl)lbl.textContent=`₩${monthDepTotal2.toLocaleString()} / ₩${monthGoalTotal.toLocaleString()}`;
+
+  // 천만원 목표 달성률
+  const GOAL_1000=10000000;
+  const total1000=total; // 총 저축액
+  const pct1000=Math.min(100,Math.round(total1000/GOAL_1000*100));
+  const p1000el=document.getElementById('saving1000Pct');
+  if(p1000el)p1000el.textContent=pct1000+'%';
+  const bar1000=document.getElementById('saving1000Bar');
+  if(bar1000)bar1000.style.width=pct1000+'%';
+  const lbl1000=document.getElementById('saving1000Lbl');
+  if(lbl1000)lbl1000.textContent=`₩${total1000.toLocaleString()} / ₩${GOAL_1000.toLocaleString()}`;
 
   const list=document.getElementById('savingList');
   if(!list)return;
   if(!savings.length){
-    list.innerHTML=`<div style="text-align:center;padding:12px;font-size:11px;color:var(--tx3)">등록된 저축통장이 없어요</div>`;
+    list.innerHTML=`<div class="card" style="text-align:center;padding:14px;font-size:11px;color:var(--tx3)">등록된 저축통장이 없어요</div>`;
     return;
   }
+
   list.innerHTML=savings.map(s=>{
     const p=s.goal>0?Math.min(100,Math.round(s.bal/s.goal*100)):0;
     const remain=s.goal>0?Math.max(0,s.goal-s.bal):0;
-    const months=s.monthly>0&&remain>0?Math.ceil(remain/s.monthly):0;
-    return`<div class="brow" style="padding:8px 0;align-items:flex-start;flex-direction:column;gap:5px">
-      <div style="display:flex;width:100%;align-items:center;gap:6px">
-        <div style="flex:1;font-size:12px;font-weight:600;color:var(--tx)">${esc(s.name)}</div>
-        <div class="mono" style="font-size:14px;font-weight:600;color:var(--ac2)">₩${s.bal.toLocaleString()}</div>
-        <button class="bedit" onclick="editSavingBal(${s.id})" title="잔액수정" style="opacity:1;width:20px;height:20px">✎</button>
+    // 이번달 입금 합계
+    const thisMonthDep=(dep[s.id]||[]).filter(d=>{
+      if(!d.date)return false;
+      const parts=d.date.split('.');
+      return parts[0]===String(now.getFullYear())&&parts[1]===p2(now.getMonth()+1);
+    }).reduce((sum,d)=>sum+d.amt,0);
+    // 월목표 대비
+    const mGoal=s.monthly||0;
+    const mRemain=Math.max(0,mGoal-thisMonthDep);
+    let monthMsg='';
+    if(mGoal>0){
+      if(thisMonthDep>=mGoal) monthMsg=`<div style="font-size:11px;color:var(--ac2);font-weight:600;margin-top:4px">🎉 이번달 목표 금액 달성!</div>`;
+      else monthMsg=`<div style="font-size:11px;color:var(--am);margin-top:4px">₩${mRemain.toLocaleString()} 더 입금하면 이번달 목표에 충족해요!</div>`;
+    }
+    // 이번달 납입 달성률
+    const mPct2=mGoal>0?Math.min(100,Math.round(thisMonthDep/mGoal*100)):0;
+
+    const depList=(dep[s.id]||[]).slice(0,5).map(d=>`
+      <div class="brow" style="padding:5px 0">
+        <div style="flex:1;font-size:11px;color:var(--ac2);font-weight:500">+₩${d.amt.toLocaleString()} 입금!</div>
+        <div style="font-size:10px;color:var(--tx3)">${d.date||''}</div>
+        <button class="bedit" onclick="editDeposit(${s.id},${d.id})" style="opacity:1;width:18px;height:18px;font-size:10px">✎</button>
+        <button class="bdel" onclick="deleteDeposit(${s.id},${d.id})" style="opacity:1;width:18px;height:18px">×</button>
+      </div>`).join('');
+
+    return`<div class="card" style="margin-bottom:8px">
+      <!-- 헤더 -->
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div style="flex:1;font-size:13px;font-weight:700;color:var(--tx)">${esc(s.name)}</div>
+        <div class="mono" style="font-size:16px;font-weight:600;color:var(--ac2)">₩${s.bal.toLocaleString()}</div>
+        <button class="bedit" onclick="editSaving(${s.id})" title="수정" style="opacity:1;width:20px;height:20px">✎</button>
         <button class="bdel" onclick="deleteSaving(${s.id})" style="opacity:1;width:20px;height:20px">×</button>
       </div>
-      ${s.goal?`<div style="width:100%">
+      <!-- 최종목표 진행바 -->
+      ${s.goal?`<div style="margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:3px">
-          <span>목표 ₩${s.goal.toLocaleString()}</span>
-          <span>${p}% ${months?`· 약 ${months}개월 후 달성`:'달성!'}</span>
+          <span>최종목표 ₩${s.goal.toLocaleString()}</span>
+          <span class="mono">${p}%${p>=100?' 🎉 달성!':` · 남은 ₩${remain.toLocaleString()}`}</span>
         </div>
         <div class="pb"><div class="pf" style="width:${p}%"></div></div>
       </div>`:''}
-      ${s.monthly?`<div style="font-size:10px;color:var(--tx3)">월 납입 <span class="mono" style="color:var(--tx2)">₩${s.monthly.toLocaleString()}</span></div>`:''}
+      <!-- 이번달 납입 목표 -->
+      ${mGoal>0?`<div style="margin-bottom:8px;padding:8px;background:var(--sf2);border-radius:var(--rs)">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:3px">
+          <span>이번달 납입 목표 달성률</span>
+          <span class="mono">${mPct2}%</span>
+        </div>
+        <div class="pb" style="margin-bottom:4px"><div class="pf ${mPct2>=100?'':mPct2<40?'d':'w'}" style="width:${mPct2}%"></div></div>
+        <div style="font-size:10px;color:var(--tx3)">이번달 입금 <span class="mono" style="color:var(--ac2)">₩${thisMonthDep.toLocaleString()}</span> / 목표 <span class="mono">₩${mGoal.toLocaleString()}</span></div>
+        ${monthMsg}
+      </div>`:''}
+      <!-- 입금 입력 -->
+      <div style="display:flex;gap:5px;margin-bottom:8px">
+        <input class="inp mono" id="depInp_${s.id}" type="number" placeholder="입금 금액" style="flex:1;font-size:11px;padding:5px 7px" onkeydown="if(event.key==='Enter')addDeposit(${s.id})">
+        <button class="btn btn-p btn-s" onclick="addDeposit(${s.id})" style="font-size:10px;white-space:nowrap">+ 입금</button>
+      </div>
+      <!-- 입금 내역 -->
+      ${depList?`<div style="padding-top:6px;border-top:1px solid var(--bd)">${depList}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -2113,6 +2326,151 @@ function renderPrism(y,m){
     disp.innerHTML=`<span style="color:var(--tx3);font-size:11px">아직 입력된 급여가 없어요</span>`;
     if(plusEl) plusEl.style.display='none';
   }
+}
+
+// ── 만다라트 달성률 ──────────────────────────────────────
+function renderMandart(){
+  const now=new Date();
+  const y=now.getFullYear(),m=now.getMonth();
+
+  // ── 연간 기준 설정 ──────────────────────────────────────
+  // 2026년: 4월(index 3)~12월 = 9개월 기준
+  // 다른 년도: 1월~12월 = 12개월 기준
+  const isBase2026=(y===2026);
+  const startMonth=isBase2026?3:0; // 0-indexed (3=4월)
+  const totalMonths=isBase2026?9:12; // 기준 총 월 수
+
+  // 연간 루틴 체크 집계 (기준 월부터 현재까지)
+  const all=S.g(K.daily)||{};
+  const routineCheck={}; // {routineId: 총 체크일수}
+  const routinePossible={}; // {routineId: 가능한 총 일수}
+  ROUTINES.forEach(r=>{routineCheck[r.id]=0;routinePossible[r.id]=0;});
+
+  // 기준 시작월부터 이번달까지 집계
+  for(let mi=startMonth;mi<=m;mi++){
+    const daysInMonth=new Date(y,mi+1,0).getDate();
+    // 이번달이면 오늘까지만, 지난달이면 말일까지
+    const lastDay=(mi===m)?now.getDate():daysInMonth;
+    for(let d=1;d<=lastDay;d++){
+      const k=y+'-'+String(mi+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      const e=all[k];
+      ROUTINES.forEach(r=>{
+        routinePossible[r.id]++;
+        if(e&&e.rt&&e.rt[r.id]) routineCheck[r.id]++;
+      });
+    }
+  }
+
+  // 연간 기준 달성률 계산
+  // 각 루틴의 연간 달성률 = (체크일수 / 기준총일수) × 100
+  // 기준총일수 = 해당 루틴이 체크 가능한 최대 일수 (기준월수 × 해당월 일수)
+  // 더 직관적으로: 이번월까지 지난 일수 / 전체기준월수의 총일수 × 루틴체크비율
+  const totalPossibleDays=Object.values(routinePossible)[0]||1;
+  // 연간 만점 기준: startMonth~12월말까지 총 일수
+  let yearTotalDays=0;
+  for(let mi=startMonth;mi<startMonth+totalMonths;mi++){
+    yearTotalDays+=new Date(y,mi+1,0).getDate();
+  }
+
+  // 현재까지 경과 기준 달성률 (연간 목표 대비)
+  // 예: 4월 한달 개근 = 30일/273일(4~12월전체) × 100 ≈ 11%
+  const manualDone=S.g('ahyun_mandart_done')||{};
+  const goalPct={};
+  MANDART_GOALS.forEach(g=>{
+    if(manualDone[g.id]){goalPct[g.id]=100;return;}
+    const linkedRoutines=Object.entries(ROUTINE_MANDART_MAP)
+      .filter(([,gid])=>gid===g.id).map(([rid])=>rid);
+    if(!linkedRoutines.length){goalPct[g.id]=0;return;}
+    // 연동 루틴들의 평균 체크일수
+    const avgChecked=linkedRoutines.reduce((s,rid)=>s+(routineCheck[rid]||0),0)/linkedRoutines.length;
+    // 연간 기준 달성률
+    const pct=yearTotalDays>0?Math.round(avgChecked/yearTotalDays*100):0;
+    goalPct[g.id]=Math.min(100,pct);
+  });
+
+  // 경과 정보 표시
+  const elapsedMonths=m-startMonth+1;
+  const maxPossibleNow=Math.round(totalPossibleDays/yearTotalDays*100);
+  document.getElementById('mandartMonthLbl').textContent=
+    y+'년 기준 '+elapsedMonths+'/'+totalMonths+'개월 경과 (최대 '+maxPossibleNow+'%)';
+
+  // 요약 카드 렌더
+  const el=document.getElementById('mandartSummary');
+  if(!el)return;
+  el.innerHTML=MANDART_GOALS.map(g=>{
+    const pct=goalPct[g.id]||0;
+    const isDone=manualDone[g.id]||pct>=100;
+    const isActive=!isDone&&pct>0;
+    const status=isDone
+      ?'<span style="font-size:10px;font-weight:700;color:var(--ac2)">✅ 목표달성</span>'
+      :isActive
+        ?'<span style="font-size:10px;color:var(--am)">🔄 실천중</span>'
+        :'<span style="font-size:10px;color:var(--tx3)">⬜ 미시작</span>';
+    const barColor=isDone?'var(--ac2)':isActive?'var(--am)':'var(--tx3)';
+    const btn=!isDone
+      ?'<button onclick="setMandartDone(\''+g.id+'\')" style="font-size:9px;padding:2px 6px;border-radius:8px;border:1px solid var(--bd);background:var(--sf3);color:var(--tx3);cursor:pointer;white-space:nowrap">100% 완료</button>'
+      :'<button onclick="unsetMandartDone(\''+g.id+'\')" style="font-size:9px;padding:2px 6px;border-radius:8px;border:1px solid var(--ac2);background:var(--acl);color:var(--ac2);cursor:pointer;white-space:nowrap">되돌리기</button>';
+    return '<div>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'
+      +'<div style="flex:1;font-size:12px;font-weight:600;color:var(--tx)">'+g.label+'</div>'
+      +status
+      +'<span class="mono" style="font-size:11px;color:'+barColor+';min-width:32px;text-align:right">'+pct+'%</span>'
+      +btn
+      +'</div>'
+      +'<div class="pb"><div class="pf" style="width:'+Math.min(100,pct)+'%;background:'+barColor+'"></div></div>'
+      +'</div>';
+  }).join('');
+
+  // 만다라트 셀에 직접 달성률 표시
+  const goalIdMap={
+    video:'mcg_video', sns:'mcg_sns', youtube:'mcg_youtube',
+    portfolio:'mcg_portfolio', study:'mcg_study', canvas:'mcg_canvas',
+    money:'mcg_money', life:'mcg_life'
+  };
+  MANDART_GOALS.forEach(g=>{
+    const el=document.getElementById(goalIdMap[g.id]);
+    if(!el)return;
+    const pct=goalPct[g.id]||0;
+    const isDone=manualDone[g.id]||pct>=100;
+    const isActive=!isDone&&pct>0;
+    // 원래 텍스트 유지하며 상태 추가
+    // 기존에 저장된 원본 텍스트 가져오기
+    const baseText=el.getAttribute('data-base')||
+      (el.querySelector('[data-label]')?el.querySelector('[data-label]').textContent:el.textContent.trim());
+    if(!el.getAttribute('data-base'))el.setAttribute('data-base',baseText.replace(/[\n\r]/g,'').trim());
+    if(!el.getAttribute('data-base'))el.setAttribute('data-base',baseText);
+    if(isDone){
+      el.innerHTML='<span data-label="1">'+baseText+'</span>'
+        +'<span style="font-size:9px;color:#aaffcc;font-weight:700;margin-top:2px;display:block">✅ 실천완료!</span>';
+      el.style.outline='2px solid var(--ac2)';
+    } else if(isActive){
+      el.innerHTML='<span data-label="1">'+baseText+'</span>'
+        +'<span style="font-size:9px;font-weight:600;margin-top:2px;display:block;opacity:.9">🔄 '+pct+'%</span>';
+      el.style.outline='none';
+    } else {
+      el.innerHTML='<span data-label="1">'+baseText+'</span>';
+      el.style.outline='none';
+    }
+  });
+
+  // 핵심 목표(중앙) — 전체 평균 달성률
+  const coreEl=document.getElementById('mcg_core');
+  if(coreEl){
+    const avgAll=Math.round(MANDART_GOALS.reduce((s,g)=>s+(goalPct[g.id]||0),0)/MANDART_GOALS.length);
+    const doneCount=MANDART_GOALS.filter(g=>manualDone[g.id]||(goalPct[g.id]||0)>=100).length;
+    coreEl.innerHTML='<span>🎯연<br>1,000만원<br>저축</span><span style="font-size:9px;font-weight:700;color:var(--ac2);display:block;margin-top:3px">'+avgAll+'% · '+doneCount+'/'+MANDART_GOALS.length+'</span>';
+  }
+} // end renderMandart
+
+function setMandartDone(id){
+  const d=S.g('ahyun_mandart_done')||{};
+  d[id]=true;S.s('ahyun_mandart_done',d);
+  renderMandart();toast('목표달성으로 표시됐어요 🎉');
+}
+function unsetMandartDone(id){
+  const d=S.g('ahyun_mandart_done')||{};
+  delete d[id];S.s('ahyun_mandart_done',d);
+  renderMandart();toast('되돌렸어요');
 }
 
 // ── UTILS ────────────────────────────────────────────────
