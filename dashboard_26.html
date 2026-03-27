@@ -601,22 +601,26 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
   <!-- 대출 현황 -->
   <div class="slbl">🏦 대출 현황</div>
 
-  <!-- 대출 요약 -->
+  <!-- 대출 헤더 (항상 보임) -->
   <div class="card" style="margin-bottom:10px;border-left:3px solid var(--re)">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <div>
-        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px">총 대출 잔액</div>
-        <div class="mono" style="font-size:26px;font-weight:500;color:var(--re)" id="loanTotalBal">₩0</div>
+    <div onclick="toggleLoanSection()" style="cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:2px">총 대출 잔액</div>
+          <div class="mono" style="font-size:22px;font-weight:500;color:var(--re)" id="loanTotalBal">₩0</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--tx3)">이달 상환 <span class="mono" style="color:var(--tx2)" id="loanTotalPay">₩0</span></div>
+          <div style="font-size:11px;color:var(--tx3);margin-top:2px">대출 <span class="mono" style="color:var(--tx2)" id="loanCount">0</span>건</div>
+        </div>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:11px;color:var(--tx3)">이달 총 상환액 <span class="mono" style="color:var(--tx2)" id="loanTotalPay">₩0</span></div>
-        <div style="font-size:11px;color:var(--tx3);margin-top:3px">대출 건수 <span class="mono" style="color:var(--tx2)" id="loanCount">0</span>건</div>
-      </div>
+      <span id="loanSectionArrow" style="font-size:12px;color:var(--tx3);transition:transform .2s">▼</span>
+    </div>
+    <!-- 접히는 상세 내용 -->
+    <div id="loanSectionBody" style="display:none;margin-top:10px;flex-direction:column;gap:0">
+      <div id="loanList"></div>
     </div>
   </div>
-
-  <!-- 대출 목록 -->
-  <div id="loanList" style="margin-bottom:10px"></div>
 
   <!-- 대출 추가 -->
   <div class="card" style="margin-bottom:10px">
@@ -936,15 +940,25 @@ function scheduleSave(){
 // 동기 스타일 유지 (캐시 기반)
 const S={
   g:k=>{
-    // 로컬 캐시에서 읽기
-    const local=_cache||JSON.parse(localStorage.getItem('ahyun_cache')||'{}');
-    try{return local[k]??null;}catch{return null;}
+    // 1순위: 메모리 캐시
+    if(_cache&&_cache[k]!==undefined) return _cache[k];
+    // 2순위: ahyun_cache (JSONBin fallback)
+    try{
+      const cache=JSON.parse(localStorage.getItem('ahyun_cache')||'{}');
+      if(cache[k]!==undefined) return cache[k];
+    }catch{}
+    // 3순위: 개별 키로 직접 저장된 것 (마이그레이션 데이터)
+    try{
+      const direct=localStorage.getItem(k);
+      if(direct) return JSON.parse(direct);
+    }catch{}
+    return null;
   },
   s:(k,v)=>{
     if(!_cache) _cache=JSON.parse(localStorage.getItem('ahyun_cache')||'{}');
     _cache[k]=v;
     localStorage.setItem('ahyun_cache',JSON.stringify(_cache));
-    scheduleSave(); // 비동기로 JSONBin에 저장
+    scheduleSave();
   },
 };
 const K={daily:'ahd_v3',fixed:'ahf_v2',exp:'ahe_v2',wallet:'ahw_v2',cards:'ahc_v2',todos:'aht_v2',sch:'ahs_v1'};
@@ -2084,6 +2098,15 @@ const LOAN_KEY='ahyun_loans_v1';
 function loadLoans(){return S.g(LOAN_KEY)||[];}
 function saveLoans(d){S.s(LOAN_KEY,d);}
 
+function toggleLoanSection(){
+  const body=document.getElementById('loanSectionBody');
+  const arrow=document.getElementById('loanSectionArrow');
+  if(!body)return;
+  const isOpen=body.style.display==='flex';
+  body.style.display=isOpen?'none':'flex';
+  if(arrow)arrow.style.transform=isOpen?'':'rotate(180deg)';
+}
+
 function toggleLoanForm(){
   const body=document.getElementById('loanFormBody');
   const arrow=document.getElementById('loanFormArrow');
@@ -2353,7 +2376,19 @@ function renderMandart(){
   const totalMonths=isBase2026?9:12; // 기준 총 월 수
 
   // 연간 루틴 체크 집계 (기준 월부터 현재까지)
-  const all=S.g(K.daily)||{};
+  // _cache 없을 때를 대비해 localStorage 직접도 체크
+  let all=S.g(K.daily)||{};
+  if(!Object.keys(all).length){
+    try{
+      // ahyun_cache 안에서 찾기
+      const cache=JSON.parse(localStorage.getItem('ahyun_cache')||'{}');
+      all=cache[K.daily]||{};
+      // ahd_v3 직접 저장된 것도 체크
+      if(!Object.keys(all).length){
+        all=JSON.parse(localStorage.getItem(K.daily)||'{}');
+      }
+    }catch(e){}
+  }
   const routineCheck={}; // {routineId: 총 체크일수}
   const routinePossible={}; // {routineId: 가능한 총 일수}
   ROUTINES.forEach(r=>{routineCheck[r.id]=0;routinePossible[r.id]=0;});
@@ -2387,18 +2422,29 @@ function renderMandart(){
   // 현재까지 경과 기준 달성률 (연간 목표 대비)
   // 예: 4월 한달 개근 = 30일/273일(4~12월전체) × 100 ≈ 11%
   const manualDone=S.g('ahyun_mandart_done')||{};
+
+  // 오늘 현재 체크 상태 (ST.rt) + 저장된 데이터 모두 반영
+  // ST.rt: 현재 메모리에 있는 오늘 루틴 체크 (저장 전도 반영)
+  const todayRt=ST&&ST.rt?ST.rt:{};
+
   const goalPct={};
   MANDART_GOALS.forEach(g=>{
     if(manualDone[g.id]){goalPct[g.id]=100;return;}
     const linkedRoutines=Object.entries(ROUTINE_MANDART_MAP)
       .filter(([,gid])=>gid===g.id).map(([rid])=>rid);
     if(!linkedRoutines.length){goalPct[g.id]=0;return;}
-    // 연동 루틴들의 평균 체크일수
+
+    // 연간 누적 체크
     const avgChecked=linkedRoutines.reduce((s,rid)=>s+(routineCheck[rid]||0),0)/linkedRoutines.length;
-    // 연간 기준 달성률
     const rawPct=yearTotalDays>0?avgChecked/yearTotalDays*100:0;
-    // 체크가 하나라도 있으면 최소 1% 보장 (미시작 vs 진행중 구분)
-    const pct=rawPct>0?Math.max(1,Math.round(rawPct)):0;
+    let pct=rawPct>0?Math.max(1,Math.round(rawPct)):0;
+
+    // 연간 데이터 없어도 오늘 루틴 한 번이라도 체크했으면 실천중(1%)
+    if(pct===0){
+      const todayChecked=linkedRoutines.some(rid=>todayRt[rid]===true);
+      if(todayChecked) pct=1;
+    }
+
     goalPct[g.id]=Math.min(100,pct);
   });
 
