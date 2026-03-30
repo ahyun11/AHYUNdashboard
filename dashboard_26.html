@@ -3302,7 +3302,6 @@ function loadDiaryToForm(d){
   document.getElementById('diaryFormDateLbl').textContent=d.date.replace(/-/g,'.');
   document.getElementById('diaryTitle').value=d.title||'';
   document.getElementById('diaryContent').value=d.content||'';
-  document.getElementById('diaryPhoto').value=d.photo||'';
   if(d.mood) selectMood(d.mood.emoji,d.mood.label);
 }
 
@@ -3325,7 +3324,7 @@ function saveDiary(){
   if(!content){toast('일기를 작성해주세요');return;}
   const diaries=loadDiaries();
   const title=document.getElementById('diaryTitle').value.trim();
-  const photo=document.getElementById('diaryPhoto').value.trim();
+  const photo='';
   if(_diaryEditId){
     const idx=diaries.findIndex(d=>d.id===_diaryEditId);
     if(idx!==-1){
