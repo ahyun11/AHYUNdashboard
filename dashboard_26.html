@@ -66,11 +66,17 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 .btn-s{padding:5px 9px;font-size:10px}
 .row{display:flex;align-items:center;gap:7px}
 /* BADGE */
+.calcBtn{padding:10px 0;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:14px;font-weight:600;cursor:pointer;transition:background .1s}
+.calcBtn:hover{background:rgba(122,144,176,.2)}
+.calcBtn:active{background:rgba(122,144,176,.35)}
+.calcOp{background:rgba(122,144,176,.15);color:#2a5090}
+.calcEq{background:#7a90b0;color:#fff;border-color:#7a90b0}
+.calcEq:hover{background:#6a80a0}
 .bg{font-size:9px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap}
 .bg-g{background:rgba(147,164,193,.25);color:#0f1d30}
-.bg-r{background:rgba(192,64,58,.12);color:#0f1d30}
-.bg-a{background:rgba(160,128,80,.15);color:#0f1d30}
-.bg-b{background:rgba(90,122,170,.2);color:#0f1d30}
+.bg-r{background:rgba(192,64,58,.22);color:#8b2020;font-weight:600}
+.bg-a{background:rgba(160,128,80,.25);color:#7a5a10;font-weight:600}
+.bg-b{background:rgba(90,122,170,.28);color:#2a5090;font-weight:600}
 .bg-p{background:rgba(120,145,180,.22);color:#2e4060}
 .bg-x{background:rgba(147,164,193,.12);color:#4a5e78}
 /* SCROLL LIST */
@@ -267,7 +273,64 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 <!-- ===== 목표·할 일 ===== -->
 <div class="vw" id="vw-plan">
 
-  <!-- To do list -->
+  <!-- 상단: 뽀모도로(좌) + 투두리스트(우) -->
+  <div style="display:grid;grid-template-columns:2fr 3fr;gap:12px;margin-bottom:0">
+    <div>
+      <!-- 🍅 뽀모도로 타이머 -->
+  <div class="slbl">🍅 뽀모도로 타이머</div>
+  <div class="card" style="text-align:center;padding:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--tx3);margin-bottom:6px" id="pomodoroStatus">🍅 집중 시간</div>
+    <div style="position:relative;width:88px;height:88px;margin:0 auto 8px">
+      <svg width="88" height="88" style="transform:rotate(-90deg)">
+        <circle cx="44" cy="44" r="38" fill="none" stroke="var(--sf2)" stroke-width="6"/>
+        <circle cx="44" cy="44" r="38" fill="none" stroke="var(--ac2)" stroke-width="6"
+          stroke-dasharray="238.8" id="pomodoroCircle" stroke-dashoffset="0" stroke-linecap="round" style="transition:stroke-dashoffset .5s"/>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="mono" style="font-size:20px;font-weight:700;color:var(--tx)" id="pomodoroTime">25:00</div>
+        <div style="font-size:9px;color:var(--tx3)" id="pomodoroSession">세션 1</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:8px">
+      <button class="btn btn-p" onclick="pomodoroToggle()" id="pomodoroBtn" style="padding:5px 14px;font-size:11px">▶ 시작</button>
+      <button class="btn" onclick="pomodoroReset()" style="padding:5px 10px;font-size:11px">↺</button>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px">
+      <div style="text-align:center">
+        <div style="font-size:9px;color:var(--tx3);margin-bottom:2px">집중</div>
+        <div style="display:flex;align-items:center;gap:2px">
+          <button onclick="adjustPomo('focus',-1)" style="width:16px;height:16px;border-radius:3px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:10px;cursor:pointer">−</button>
+          <span class="mono" style="font-size:11px;font-weight:600;min-width:24px;text-align:center" id="pomoFocusLbl">25분</span>
+          <button onclick="adjustPomo('focus',1)" style="width:16px;height:16px;border-radius:3px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:10px;cursor:pointer">+</button>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:var(--tx3);margin-bottom:2px">휴식</div>
+        <div style="display:flex;align-items:center;gap:2px">
+          <button onclick="adjustPomo('break',-1)" style="width:16px;height:16px;border-radius:3px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:10px;cursor:pointer">−</button>
+          <span class="mono" style="font-size:11px;font-weight:600;min-width:24px;text-align:center" id="pomoBreakLbl">5분</span>
+          <button onclick="adjustPomo('break',1)" style="width:16px;height:16px;border-radius:3px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:10px;cursor:pointer">+</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top:8px;border-top:1px solid var(--bd);display:flex;justify-content:space-around">
+      <div>
+        <div style="font-size:9px;color:var(--tx3)">세션</div>
+        <div class="mono" style="font-size:14px;font-weight:700;color:var(--ac2)" id="pomodoroSessionCount">0</div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--tx3)">오늘</div>
+        <div class="mono" style="font-size:14px;font-weight:700;color:#1e3050" id="pomodoroTotalTime">0분</div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--tx3)">누적</div>
+        <div class="mono" style="font-size:14px;font-weight:700;color:#1e3050" id="pomodoroAllTime">0분</div>
+      </div>
+    </div>
+  </div>
+    </div>
+    <div>
+      <!-- To do list -->
   <div class="slbl" style="margin-top:0">📝 To do list</div>
   <div class="card" style="margin-bottom:10px">
     <div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:5px">
@@ -289,7 +352,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <button class="btn btn-s" onclick="clearDone()" style="font-size:11px">완료 삭제</button>
     </div>
   </div>
+    </div>
+  </div>
 
+  <!-- 하단: 날짜별 투두 달력 -->
   <!-- 📅 날짜별 투두 달력 -->
   <div class="slbl">📅 날짜별 투두</div>
   <div class="card" style="margin-bottom:10px">
@@ -312,58 +378,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     </div>
   </div>
 
-  <!-- 🍅 뽀모도로 타이머 -->
-  <div class="slbl">🍅 뽀모도로 타이머</div>
-  <div class="card" style="text-align:center">
-    <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--tx3);margin-bottom:8px" id="pomodoroStatus">🍅 집중 시간</div>
-    <div style="position:relative;width:130px;height:130px;margin:0 auto 12px">
-      <svg width="130" height="130" style="transform:rotate(-90deg)">
-        <circle cx="65" cy="65" r="58" fill="none" stroke="var(--sf2)" stroke-width="8"/>
-        <circle cx="65" cy="65" r="58" fill="none" stroke="var(--ac2)" stroke-width="8"
-          stroke-dasharray="364.4" id="pomodoroCircle" stroke-dashoffset="0" stroke-linecap="round" style="transition:stroke-dashoffset .5s"/>
-      </svg>
-      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <div class="mono" style="font-size:32px;font-weight:700;color:var(--tx)" id="pomodoroTime">25:00</div>
-        <div style="font-size:10px;color:var(--tx3)" id="pomodoroSession">세션 1</div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px">
-      <button class="btn btn-p" onclick="pomodoroToggle()" id="pomodoroBtn" style="padding:8px 20px;font-size:13px">▶ 시작</button>
-      <button class="btn" onclick="pomodoroReset()" style="padding:8px 14px;font-size:13px">↺</button>
-    </div>
-    <div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-      <div style="text-align:center">
-        <div style="font-size:9px;color:var(--tx3);margin-bottom:3px">집중</div>
-        <div style="display:flex;align-items:center;gap:3px">
-          <button onclick="adjustPomo('focus',-1)" style="width:20px;height:20px;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:11px;cursor:pointer">−</button>
-          <span class="mono" style="font-size:13px;font-weight:600;min-width:28px;text-align:center" id="pomoFocusLbl">25분</span>
-          <button onclick="adjustPomo('focus',1)" style="width:20px;height:20px;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:11px;cursor:pointer">+</button>
-        </div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:9px;color:var(--tx3);margin-bottom:3px">휴식</div>
-        <div style="display:flex;align-items:center;gap:3px">
-          <button onclick="adjustPomo('break',-1)" style="width:20px;height:20px;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:11px;cursor:pointer">−</button>
-          <span class="mono" style="font-size:13px;font-weight:600;min-width:28px;text-align:center" id="pomoBreakLbl">5분</span>
-          <button onclick="adjustPomo('break',1)" style="width:20px;height:20px;border-radius:4px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font-size:11px;cursor:pointer">+</button>
-        </div>
-      </div>
-    </div>
-    <div style="padding-top:10px;border-top:1px solid var(--bd);display:flex;justify-content:space-around">
-      <div>
-        <div style="font-size:9px;color:var(--tx3)">오늘 세션</div>
-        <div class="mono" style="font-size:18px;font-weight:700;color:var(--ac2)" id="pomodoroSessionCount">0</div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--tx3)">총 집중</div>
-        <div class="mono" style="font-size:18px;font-weight:700;color:#1e3050" id="pomodoroTotalTime">0분</div>
-      </div>
-      <div>
-        <div style="font-size:9px;color:var(--tx3)">누적 집중</div>
-        <div class="mono" style="font-size:18px;font-weight:700;color:#1e3050" id="pomodoroAllTime">0분</div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- ===== 만다라트 ===== -->
@@ -495,12 +509,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <!-- 메모 (30%) -->
       <div style="flex:1;border-left:1px solid var(--bd);padding-left:10px;min-height:200px">
         <div style="font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:6px;letter-spacing:.3px">📝 메모</div>
-        <div id="schMemoList" style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;max-height:180px;overflow-y:auto;scrollbar-width:thin"></div>
-        <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
           <input class="inp" id="schMemoDate" type="date" style="font-size:10px;padding:3px 6px">
           <input class="inp" id="schMemoText" placeholder="일정 메모..." style="font-size:10px;padding:3px 6px" onkeydown="if(event.key==='Enter')addSchMemo()">
           <button class="btn btn-p btn-s" onclick="addSchMemo()" style="font-size:10px;padding:3px 0">+ 추가</button>
         </div>
+        <div id="schMemoList" style="display:flex;flex-direction:column;gap:5px;max-height:180px;overflow-y:auto;scrollbar-width:thin"></div>
       </div>
     </div>
   </div>
@@ -648,7 +662,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
   </div>
 
   <!-- 카드 내역 -->
-  <div class="slbl">💳 카드 사용내역</div>
+  <div class="slbl" style="display:flex;align-items:center;gap:8px">💳 카드 사용내역<button onclick="openCalc()" style="font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid rgba(147,164,193,.4);background:#7a90b0;color:#fff;cursor:pointer;font-weight:600">계산기</button></div>
   <div class="g2" style="margin-bottom:10px">
     <div class="card" style="padding:13px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
@@ -816,21 +830,21 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <div class="g2">
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">통장명</div>
-          <input class="inp" id="savingNameInp" placeholder="예: 적금, CMA..." style="width:100%;font-size:11px">
+          <input class="inp" id="savingNameInp" placeholder="예: 적금, CMA..." style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addSaving()">
         </div>
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">현재 잔액</div>
-          <input class="inp mono" id="savingBalInp" type="number" placeholder="잔액 (원)" style="width:100%;font-size:11px">
+          <input class="inp mono" id="savingBalInp" type="number" placeholder="잔액 (원)" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addSaving()">
         </div>
       </div>
       <div class="g2">
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">최종 목표 금액</div>
-          <input class="inp mono" id="savingGoalInp" type="number" placeholder="목표 (원)" style="width:100%;font-size:11px">
+          <input class="inp mono" id="savingGoalInp" type="number" placeholder="목표 (원)" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addSaving()">
         </div>
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 납입 목표 금액</div>
-          <input class="inp mono" id="savingMonthlyInp" type="number" placeholder="월 목표 (원)" style="width:100%;font-size:11px">
+          <input class="inp mono" id="savingMonthlyInp" type="number" placeholder="월 목표 (원)" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addSaving()">
         </div>
       </div>
       <button class="btn btn-p btn-s" onclick="addSaving()" style="width:100%">+ 추가</button>
@@ -891,7 +905,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <div class="g2">
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">대출명</div>
-          <input class="inp" id="loanNameInp" placeholder="예: 카카오뱅크 신용대출" style="width:100%;font-size:11px">
+          <input class="inp" id="loanNameInp" placeholder="예: 카카오뱅크 신용대출" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addLoan()">
         </div>
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">대출 원금</div>
@@ -911,11 +925,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <div class="g2">
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 상환액 <span style="color:var(--ac2);font-size:9px">(자동계산)</span></div>
-          <input class="inp mono" id="loanPayInp" type="number" placeholder="자동계산 또는 직접입력" style="width:100%;font-size:11px">
+          <input class="inp mono" id="loanPayInp" type="number" placeholder="자동계산 또는 직접입력" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addLoan()">
         </div>
         <div>
           <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">상환일 (매월)</div>
-          <input class="inp mono" id="loanDayInp" type="number" placeholder="예: 15" min="1" max="31" style="width:100%;font-size:11px">
+          <input class="inp mono" id="loanDayInp" type="number" placeholder="예: 15" min="1" max="31" style="width:100%;font-size:11px" onkeydown="if(event.key==='Enter')addLoan()">
         </div>
       </div>
       <div class="g2">
@@ -1031,21 +1045,74 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 <div class="toast" id="toast"></div>
 
 <!-- 대출 수정 모달 -->
+<!-- 투두 수정 모달 -->
+<div id="todoEditModal" style="display:none;position:fixed;inset:0;background:rgba(24,32,43,.45);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--r);padding:22px;width:88%;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px">✏️ 투두 수정</div>
+    <input class="inp" id="todoEditText" style="width:100%;font-size:12px;margin-bottom:10px" placeholder="할 일" onkeydown="if(event.key==='Enter')saveTodoEdit()">
+    <select class="inp" id="todoEditPri" style="width:100%;font-size:12px;margin-bottom:14px">
+      <option value="high">🔴 높음</option>
+      <option value="mid">🟡 보통</option>
+      <option value="low">🔵 낮음</option>
+    </select>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p" onclick="saveTodoEdit()" style="flex:1">저장</button>
+      <button class="btn" onclick="closeTodoEdit()">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- 계산기 모달 -->
+<div id="calcModal" style="display:none;position:fixed;inset:0;background:rgba(24,32,43,.4);z-index:300;align-items:center;justify-content:center" onclick="if(event.target===this)closeCalc()">
+  <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--r);padding:16px;width:240px;box-shadow:0 8px 32px rgba(0,0,0,.25)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--tx)">🧮 계산기</div>
+      <button onclick="closeCalc()" style="border:none;background:none;font-size:16px;cursor:pointer;color:var(--tx3)">×</button>
+    </div>
+    <!-- 디스플레이 -->
+    <div style="background:var(--sf2);border-radius:6px;padding:10px 12px;margin-bottom:10px;text-align:right">
+      <div style="font-size:10px;color:var(--tx3);min-height:14px;margin-bottom:2px" id="calcExpr"></div>
+      <div class="mono" style="font-size:24px;font-weight:700;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="calcDisplay">0</div>
+    </div>
+    <!-- 버튼 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+      <button class="calcBtn calcOp" onclick="calcInput('C')" style="grid-column:span 2">C</button>
+      <button class="calcBtn calcOp" onclick="calcInput('⌫')">⌫</button>
+      <button class="calcBtn calcOp" onclick="calcInput('/')">÷</button>
+      <button class="calcBtn" onclick="calcInput('7')">7</button>
+      <button class="calcBtn" onclick="calcInput('8')">8</button>
+      <button class="calcBtn" onclick="calcInput('9')">9</button>
+      <button class="calcBtn calcOp" onclick="calcInput('*')">×</button>
+      <button class="calcBtn" onclick="calcInput('4')">4</button>
+      <button class="calcBtn" onclick="calcInput('5')">5</button>
+      <button class="calcBtn" onclick="calcInput('6')">6</button>
+      <button class="calcBtn calcOp" onclick="calcInput('-')">−</button>
+      <button class="calcBtn" onclick="calcInput('1')">1</button>
+      <button class="calcBtn" onclick="calcInput('2')">2</button>
+      <button class="calcBtn" onclick="calcInput('3')">3</button>
+      <button class="calcBtn calcOp" onclick="calcInput('+')">+</button>
+      <button class="calcBtn" onclick="calcInput('0')" style="grid-column:span 2">0</button>
+      <button class="calcBtn" onclick="calcInput('.')">.</button>
+      <button class="calcBtn calcEq" onclick="calcInput('=')">=</button>
+    </div>
+  </div>
+</div>
+
 <div id="loanEditModal" style="display:none;position:fixed;inset:0;background:rgba(24,32,43,0.45);z-index:200;align-items:center;justify-content:center;overflow-y:auto">
   <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--r);padding:22px;width:92%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.6);margin:20px auto">
     <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px">대출 수정</div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">대출명</div><input class="inp" id="leNameInp" style="width:100%"></div>
+      <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">대출명</div><input class="inp" id="leNameInp" style="width:100%" onkeydown="if(event.key==='Enter')saveLoanEdit()"></div>
       <div class="g2">
         <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">대출 원금</div><input class="inp mono" id="lePrincipalInp" type="number" style="width:100%"></div>
         <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">현재 잔액</div><input class="inp mono" id="leBalInp" type="number" style="width:100%"></div>
       </div>
       <div class="g2">
         <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">연 금리 (%)</div><input class="inp mono" id="leRateInp" type="number" step="0.1" style="width:100%"></div>
-        <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 상환액</div><input class="inp mono" id="lePayInp" type="number" style="width:100%"></div>
+        <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">월 상환액</div><input class="inp mono" id="lePayInp" type="number" style="width:100%" onkeydown="if(event.key==='Enter')saveLoanEdit()"></div>
       </div>
       <div class="g2">
-        <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">상환일</div><input class="inp mono" id="leDayInp" type="number" min="1" max="31" style="width:100%"></div>
+        <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">상환일</div><input class="inp mono" id="leDayInp" type="number" min="1" max="31" style="width:100%" onkeydown="if(event.key==='Enter')saveLoanEdit()"></div>
         <div><div style="font-size:10px;color:var(--tx3);margin-bottom:3px">만기일</div><input class="inp" id="leEndInp" type="month" style="width:100%"></div>
       </div>
       <div class="g2">
@@ -1079,11 +1146,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">내역</div>
-        <input class="inp" id="cardEditName" style="width:100%" placeholder="내역명">
+        <input class="inp" id="cardEditName" style="width:100%" placeholder="내역명" onkeydown="if(event.key==='Enter')saveCardEdit()">
       </div>
       <div>
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">금액</div>
-        <input class="inp mono" id="cardEditAmt" type="number" style="width:100%" placeholder="금액 (원)">
+        <input class="inp mono" id="cardEditAmt" type="number" style="width:100%" placeholder="금액 (원)" onkeydown="if(event.key==='Enter')saveCardEdit()">
       </div>
       <div id="cardEditPayTypeWrap">
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">결제 방식</div>
@@ -1120,11 +1187,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     <div style="display:flex;flex-direction:column;gap:10px">
       <div>
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">항목명</div>
-        <input class="inp" id="fixEditName" style="width:100%" placeholder="항목명">
+        <input class="inp" id="fixEditName" style="width:100%" placeholder="항목명" onkeydown="if(event.key==='Enter')saveFixEdit()">
       </div>
       <div>
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">금액</div>
-        <input class="inp mono" id="fixEditAmt" type="number" style="width:100%" placeholder="금액">
+        <input class="inp mono" id="fixEditAmt" type="number" style="width:100%" placeholder="금액" onkeydown="if(event.key==='Enter')saveFixEdit()">
       </div>
       <div>
         <div style="font-size:10px;color:var(--tx3);margin-bottom:4px">카테고리</div>
@@ -1702,14 +1769,34 @@ function addTodo(ev){
   todos.unshift({id:Date.now(),text:t,p,done:false});
   S.s(K.todos,todos);ip.value='';renderTodos();toast('✓ 추가됐어요');
 }
-function togTodo(id){S.s(K.todos,(S.g(K.todos)||[]).map(x=>x.id===id?{...x,done:!x.done}:x));renderTodos();}
-function delTodo(id){S.s(K.todos,(S.g(K.todos)||[]).filter(x=>x.id!==id));renderTodos();}
+function togTodo(id){
+  const todos=(S.g(K.todos)||[]).map(x=>{
+    if(x.id!==id) return x;
+    const done=!x.done;
+    return {...x,done,checkedAt:done?kst():null};
+  });
+  S.s(K.todos,todos);
+  renderTodos();
+  if(planSelDate) renderPlanDayTodos(planSelDate);
+}
+function delTodo(id){
+  S.s(K.todos,(S.g(K.todos)||[]).filter(x=>x.id!==id));
+  renderTodos();
+  renderPlanCal();
+  if(planSelDate) renderPlanDayTodos(planSelDate);
+}
 function cycP(id){
   const o=['high','mid','low'];
   S.s(K.todos,(S.g(K.todos)||[]).map(x=>x.id===id?{...x,p:o[(o.indexOf(x.p)+1)%3]}:x));renderTodos();
 }
 function setTF(f,btn){tF=f;document.querySelectorAll('#tfBtns .tf-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderTodos();}
-function clearDone(){S.s(K.todos,(S.g(K.todos)||[]).filter(x=>!x.done));renderTodos();toast('완료 삭제됐어요');}
+function clearDone(){
+  S.s(K.todos,(S.g(K.todos)||[]).filter(x=>!x.done));
+  renderTodos();
+  renderPlanCal();
+  if(planSelDate) renderPlanDayTodos(planSelDate);
+  toast('완료 삭제됐어요');
+}
 function renderTodos(){
   const all=S.g(K.todos)||[];
   let li=all;
@@ -1722,6 +1809,7 @@ function renderTodos(){
       <div class="tcb ${t.done?'ck':''}" onclick="togTodo(${t.id})">${t.done?'✓':''}</div>
       <div class="ttx" style="flex:1;font-size:11px">${esc(t.text)}</div>
       <button class="tpri ${PC[t.p]}" onclick="cycP(${t.id})">${PL[t.p]}</button>
+      <button class="bedit" onclick="openTodoEdit(${t.id})" style="opacity:1;width:20px;height:20px;font-size:11px">✎</button>
       <button class="tdl" onclick="delTodo(${t.id})">×</button>
     </div>`).join(''):`<div style="text-align:center;padding:18px;font-size:11px;color:var(--tx3)">항목 없음</div>`;
   const done=all.filter(x=>x.done).length;
@@ -3572,6 +3660,10 @@ function pomoStart(){
   document.getElementById('pomodoroBtn').textContent='⏸ 일시정지';
   _pomoTimer=setInterval(()=>{
     _pomoLeft--;
+    // 5초 전 경고음
+    if(_pomoLeft===5&&!_pomoIsBreak){
+      try{const a=new AudioContext();const o=a.createOscillator();const g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=660;g.gain.setValueAtTime(0.2,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+0.3);o.start();o.stop(a.currentTime+0.3);}catch(e){}
+    }
     if(_pomoLeft<=0){
       // 세션 완료
       if(!_pomoIsBreak){
@@ -3635,7 +3727,7 @@ function updatePomoDisplay(){
   // 원형 진행바
   const total=(_pomoIsBreak?_pomoBreak:_pomoFocus)*60;
   const pct=_pomoLeft/total;
-  const circ=364.4;
+  const circ=238.8;
   const el=document.getElementById('pomodoroCircle');
   if(el){
     el.style.stroke=_pomoIsBreak?'var(--am)':'var(--ac2)';
@@ -3778,12 +3870,15 @@ function renderPlanCal(){
   const days=new Date(y,m+1,0).getDate();
   const todK=tdk();
   const allD=S.g(K.daily)||{};
+  const allTodosD=S.g(K.todos)||[];
 
   let ch='';
   for(let i=0;i<fd;i++) ch+=`<div class="schcday other"></div>`;
   for(let d=1;d<=days;d++){
     const k=`${y}-${p2(m+1)}-${p2(d)}`;
-    const hasTodo=allD[k]&&((allD[k].todos||[]).length>0||(allD[k].vc||0)>0||allD[k].memo);
+    const kDot=k.replace(/-/g,'.');
+    const hasChecked=allTodosD.some(t=>t.checkedAt&&t.checkedAt.startsWith(kDot));
+    const hasTodo=(allD[k]&&((allD[k].vc||0)>0||allD[k].memo))||hasChecked;
     const isToday=k===todK?'td':'';
     const isSel=k===planSelDate?'style="outline:2px solid #7a90b0"':'';
     const dot=hasTodo?`<div style="width:5px;height:5px;border-radius:50%;background:#7a90b0;margin:2px auto 0"></div>`:'';
@@ -3811,28 +3906,124 @@ function renderPlanDayTodos(k){
   const d=new Date(k);
   lbl.textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${DK[d.getDay()]})`;
 
+  // K.todos (투두리스트)에서 checkedAt 날짜 기준으로 필터
+  const allTodos=S.g(K.todos)||[];
+  const dayTodos=allTodos.filter(t=>t.checkedAt&&t.checkedAt.startsWith(k.replace(/-/g,'.')));
+
+  // 오늘 날짜면 미완료도 표시
+  const todK=tdk();
+  const isToday=k===todK;
+  const activeTodos=isToday?allTodos.filter(t=>!t.done):[];
+
   const allD=S.g(K.daily)||{};
   const day=allD[k];
-  const todos=day?.todos||[];
   const memo=day?.memo||'';
   const vc=day?.vc||0;
 
-  if(!todos.length && !memo && !vc){
+  if(!dayTodos.length && !activeTodos.length && !memo && !vc){
     el.innerHTML='<div style="font-size:10px;color:var(--tx3)">기록 없음</div>';
     return;
   }
 
   let html='';
   if(vc) html+=`<div style="font-size:10px;color:#7a90b0;font-weight:600;margin-bottom:3px">🎬 영상 ${vc}개</div>`;
-  if(todos.length){
-    html+=todos.map(t=>`
-      <div style="display:flex;align-items:center;gap:5px;padding:3px 0">
-        <span style="font-size:10px">${t.done?'✅':'⬜'}</span>
-        <span style="font-size:10px;color:var(--tx);${t.done?'text-decoration:line-through;opacity:.5':''}">${esc(t.text||'')}</span>
+
+  if(isToday && activeTodos.length){
+    html+=`<div style="font-size:9px;font-weight:700;color:var(--tx3);margin:3px 0 2px">미완료</div>`;
+    html+=activeTodos.map(t=>`
+      <div style="display:flex;align-items:center;gap:5px;padding:2px 0">
+        <span style="font-size:10px">⬜</span>
+        <span style="font-size:10px;color:var(--tx)">${esc(t.text||'')}</span>
       </div>`).join('');
   }
+
+  if(dayTodos.length){
+    html+=`<div style="font-size:9px;font-weight:700;color:var(--tx3);margin:3px 0 2px">완료</div>`;
+    html+=dayTodos.map(t=>`
+      <div style="display:flex;align-items:flex-start;gap:5px;padding:2px 0">
+        <span style="font-size:10px;flex-shrink:0">✅</span>
+        <div>
+          <div style="font-size:10px;color:var(--tx);text-decoration:line-through;opacity:.6">${esc(t.text||'')}</div>
+          ${t.checkedAt?`<div style="font-size:9px;color:var(--tx3)">${t.checkedAt}</div>`:''}
+        </div>
+      </div>`).join('');
+  }
+
   if(memo) html+=`<div style="font-size:10px;color:var(--tx3);margin-top:4px;padding-top:4px;border-top:1px solid var(--bd);white-space:pre-wrap">${esc(memo)}</div>`;
   el.innerHTML=html;
+}
+
+// ── 투두 수정 ────────────────────────────────────────────
+let _todoEditId=null;
+function openTodoEdit(id){
+  const t=(S.g(K.todos)||[]).find(x=>x.id===id);
+  if(!t) return;
+  _todoEditId=id;
+  document.getElementById('todoEditText').value=t.text;
+  document.getElementById('todoEditPri').value=t.p||'mid';
+  document.getElementById('todoEditModal').style.display='flex';
+}
+function closeTodoEdit(){
+  document.getElementById('todoEditModal').style.display='none';
+  _todoEditId=null;
+}
+function saveTodoEdit(){
+  if(!_todoEditId) return;
+  const text=document.getElementById('todoEditText').value.trim();
+  const p=document.getElementById('todoEditPri').value;
+  if(!text){toast('내용을 입력해주세요');return;}
+  S.s(K.todos,(S.g(K.todos)||[]).map(x=>x.id===_todoEditId?{...x,text,p}:x));
+  closeTodoEdit();
+  renderTodos();
+  toast('수정됐어요 ✓');
+}
+
+// ── 계산기 ───────────────────────────────────────────────
+let _calcExpr='', _calcResult='0', _calcNewNum=true;
+
+function openCalc(){
+  document.getElementById('calcModal').style.display='flex';
+  _calcExpr=''; _calcResult='0'; _calcNewNum=true;
+  updateCalcDisplay();
+}
+function closeCalc(){document.getElementById('calcModal').style.display='none';}
+
+function calcInput(v){
+  const disp=document.getElementById('calcDisplay');
+  const expr=document.getElementById('calcExpr');
+
+  if(v==='C'){
+    _calcExpr=''; _calcResult='0'; _calcNewNum=true;
+  } else if(v==='⌫'){
+    if(_calcResult.length>1) _calcResult=_calcResult.slice(0,-1);
+    else _calcResult='0';
+    _calcNewNum=false;
+  } else if(v==='='){
+    try{
+      const full=_calcExpr+_calcResult;
+      const res=Function('"use strict";return ('+full+')')();
+      _calcExpr=full+'=';
+      _calcResult=parseFloat(res.toFixed(10)).toString();
+      _calcNewNum=true;
+    }catch(e){_calcResult='오류';_calcExpr='';}
+  } else if(['+','-','*','/'].includes(v)){
+    _calcExpr+=_calcResult+v;
+    _calcNewNum=true;
+  } else if(v==='.'){
+    if(_calcNewNum){_calcResult='0.';_calcNewNum=false;}
+    else if(!_calcResult.includes('.')) _calcResult+='.';
+  } else {
+    if(_calcNewNum){_calcResult=v;_calcNewNum=false;}
+    else _calcResult=_calcResult==='0'?v:_calcResult+v;
+  }
+  updateCalcDisplay();
+}
+
+function updateCalcDisplay(){
+  const n=parseFloat(_calcResult);
+  const formatted=isNaN(n)?_calcResult:n.toLocaleString('ko-KR',{maximumFractionDigits:10});
+  document.getElementById('calcDisplay').textContent=formatted;
+  document.getElementById('calcExpr').textContent=_calcExpr.replace('*','×').replace('/','÷');
 }
 
 // ── UTILS ────────────────────────────────────────────────
