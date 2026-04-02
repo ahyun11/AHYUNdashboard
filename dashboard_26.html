@@ -463,9 +463,24 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
   <!-- 달력 -->
   <div class="slbl">📅 이달 달력</div>
   <div class="card" style="margin-bottom:10px">
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px" id="schCalL"></div>
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px" id="schCalG"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:7px;border-top:1px solid var(--bd)" id="schLegend"></div>
+    <div style="display:flex;gap:10px;align-items:flex-start">
+      <!-- 달력 (70%) -->
+      <div style="flex:0 0 70%">
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px" id="schCalL"></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px" id="schCalG"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:7px;border-top:1px solid var(--bd)" id="schLegend"></div>
+      </div>
+      <!-- 메모 (30%) -->
+      <div style="flex:1;border-left:1px solid var(--bd);padding-left:10px;min-height:200px">
+        <div style="font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:6px;letter-spacing:.3px">📝 메모</div>
+        <div id="schMemoList" style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;max-height:180px;overflow-y:auto;scrollbar-width:thin"></div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <input class="inp" id="schMemoDate" type="date" style="font-size:10px;padding:3px 6px">
+          <input class="inp" id="schMemoText" placeholder="일정 메모..." style="font-size:10px;padding:3px 6px" onkeydown="if(event.key==='Enter')addSchMemo()">
+          <button class="btn btn-p btn-s" onclick="addSchMemo()" style="font-size:10px;padding:3px 0">+ 추가</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 일정 목록 -->
@@ -1443,7 +1458,7 @@ function sw(v,btn){
   if(v==='plan')     pomoLoad();
   if(v==='plan')     renderTodos();
   if(v==='budget')   {renderBudget();renderCards();}
-  if(v==='schedule') renderSch();
+  if(v==='schedule' && (renderSchMemo(),true)) renderSch();
   if(v==='mandart'){
     if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
   }
@@ -3598,6 +3613,53 @@ function getWeatherDesc(code){
   if(code<=86)return'눈';
   if(code<=99)return'뇌우';
   return'알수없음';
+}
+
+// ── 스케줄 메모 ──────────────────────────────────────────
+const SCH_MEMO_KEY='ahyun_sch_memo_v1';
+function loadSchMemos(){return S.g(SCH_MEMO_KEY)||[];}
+function saveSchMemos(d){S.s(SCH_MEMO_KEY,d);}
+
+function addSchMemo(){
+  const date=document.getElementById('schMemoDate').value;
+  const text=document.getElementById('schMemoText').value.trim();
+  if(!text){toast('내용을 입력해주세요');return;}
+  const memos=loadSchMemos();
+  memos.unshift({id:Date.now(),date,text});
+  saveSchMemos(memos);
+  document.getElementById('schMemoDate').value='';
+  document.getElementById('schMemoText').value='';
+  renderSchMemo();
+}
+
+function delSchMemo(id){
+  saveSchMemos(loadSchMemos().filter(m=>m.id!==id));
+  renderSchMemo();
+}
+
+function togSchMemo(id){
+  const memos=loadSchMemos();
+  const idx=memos.findIndex(m=>m.id===id);
+  if(idx!==-1){memos[idx].done=!memos[idx].done;saveSchMemos(memos);renderSchMemo();}
+}
+
+function renderSchMemo(){
+  const el=document.getElementById('schMemoList');
+  if(!el)return;
+  const memos=loadSchMemos();
+  if(!memos.length){
+    el.innerHTML='<div style="font-size:10px;color:var(--tx3)">메모 없음</div>';
+    return;
+  }
+  el.innerHTML=memos.map(m=>`
+    <div style="display:flex;align-items:flex-start;gap:5px;padding:4px 0;border-bottom:1px solid var(--bd)">
+      <input type="checkbox" ${m.done?'checked':''} onclick="togSchMemo(${m.id})" style="margin-top:2px;cursor:pointer;accent-color:#7a90b0;flex-shrink:0">
+      <div style="flex:1;${m.done?'opacity:.5':''}">
+        ${m.date?`<div style="font-size:9px;color:var(--tx3);font-weight:600">${m.date.replace(/-/g,'.')}</div>`:''}
+        <div style="font-size:10px;color:var(--tx);line-height:1.4;${m.done?'text-decoration:line-through':''}">${esc(m.text)}</div>
+      </div>
+      <button onclick="delSchMemo(${m.id})" style="font-size:11px;background:none;border:none;color:var(--tx3);cursor:pointer;padding:0;flex-shrink:0">×</button>
+    </div>`).join('');
 }
 
 // ── UTILS ────────────────────────────────────────────────
