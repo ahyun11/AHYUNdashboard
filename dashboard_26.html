@@ -290,6 +290,28 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     </div>
   </div>
 
+  <!-- 📅 날짜별 투두 달력 -->
+  <div class="slbl">📅 날짜별 투두</div>
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <button class="btn btn-s" onclick="planChM(-1)" style="font-size:12px;padding:3px 10px">‹</button>
+      <span style="font-size:12px;font-weight:700;color:var(--tx)" id="planML"></span>
+      <button class="btn btn-s" onclick="planChM(1)" style="font-size:12px;padding:3px 10px">›</button>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-start">
+      <!-- 달력 70% -->
+      <div style="flex:0 0 70%">
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px" id="planCalL"></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px" id="planCalG"></div>
+      </div>
+      <!-- 선택 날짜 투두 30% -->
+      <div style="flex:1;border-left:1px solid var(--bd);padding-left:10px;min-height:160px">
+        <div style="font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:6px" id="planDayLbl">날짜를 선택하세요</div>
+        <div id="planDayTodos" style="display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;scrollbar-width:thin"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- 🍅 뽀모도로 타이머 -->
   <div class="slbl">🍅 뽀모도로 타이머</div>
   <div class="card" style="text-align:center">
@@ -562,9 +584,19 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
   <!-- 이달 용돈 잔액 -->
   <div class="slbl">💵 이달 용돈 잔액</div>
   <div class="card" style="margin-bottom:10px">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
       <div><div style="font-size:11px;color:#1e3050;font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px">이달 용돈 잔액</div><div class="wbal" id="walBal">₩0</div><div style="font-size:12px;color:var(--tx3);margin-top:2px" id="walSub">설정 중...</div><div class="pb" style="width:180px;margin-top:6px"><div class="pf" id="walBar" style="width:100%"></div></div></div>
       <div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:3px">한달 용돈 <span class="mono" style="color:var(--tx2)" id="walAmt">₩0</span></div><div style="font-size:11px;color:var(--tx3);margin-bottom:7px">변동지출 <span class="mono" style="color:var(--re)" id="walSpent">-₩0</span></div><div class="row" style="gap:5px;justify-content:flex-end"><input class="inp mono" type="number" id="walInput" placeholder="용돈 (원)" style="width:100px;font-size:12px;padding:5px 7px" onkeydown="if(event.key==='Enter')setWal()"><button class="btn btn-s" onclick="setWal()" style="background:#7a90b0;color:#fff;border-color:#7a90b0">설정</button><button class="btn btn-s" onclick="rolloverWal()" style="background:#7a90b0;color:#fff;border-color:#7a90b0;font-size:10px;white-space:nowrap">이월↗</button></div></div>
+    </div>
+    <!-- 용돈 충전 -->
+    <div style="padding-top:10px;border-top:1px solid var(--bd)">
+      <div style="font-size:11px;font-weight:700;color:#1e3050;margin-bottom:7px">💰 용돈 충전 내역</div>
+      <div id="walChargeList" style="max-height:120px;overflow-y:auto;scrollbar-width:thin;margin-bottom:8px"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <input class="inp" id="walChargeMemo" placeholder="메모 (선택)" style="flex:1;min-width:80px;font-size:11px;padding:5px 7px" onkeydown="if(event.key==='Enter')addWalCharge()">
+        <input class="inp mono" id="walChargeAmt" type="number" placeholder="충전 금액" style="flex:1;min-width:80px;font-size:11px;padding:5px 7px" onkeydown="if(event.key==='Enter')addWalCharge()">
+        <button class="btn btn-s" onclick="addWalCharge()" style="background:#7a90b0;color:#fff;border-color:#7a90b0;font-size:11px">+ 충전</button>
+      </div>
     </div>
   </div>
 
@@ -1458,7 +1490,7 @@ function sw(v,btn){
   if(v==='plan')     pomoLoad();
   if(v==='plan')     renderTodos();
   if(v==='budget')   {renderBudget();renderCards();}
-  if(v==='schedule' && (renderSchMemo(),true)) renderSch();
+  if(v==='plan'){renderPlanCal();} if(v==='schedule' && (renderSchMemo(),true)) renderSch();
   if(v==='mandart'){
     if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
   }
@@ -1983,6 +2015,67 @@ function bMK(){return ym(bMon);}
 function bChM(d){bMon=new Date(bMon.getFullYear(),bMon.getMonth()+d,1);renderBudget();renderCards();}
 
 // wallet
+// ── 용돈 충전 내역 ───────────────────────────────────────
+const WAL_CHARGE_KEY='ahyun_wal_charge_v1';
+function loadWalCharges(){return S.g(WAL_CHARGE_KEY)||{};}
+function saveWalCharges(d){S.s(WAL_CHARGE_KEY,d);}
+
+function addWalCharge(){
+  const amt=parseInt(document.getElementById('walChargeAmt').value)||0;
+  const memo=document.getElementById('walChargeMemo').value.trim();
+  if(!amt){toast('금액을 입력해주세요');return;}
+  const charges=loadWalCharges();
+  const mk=bMK();
+  if(!charges[mk])charges[mk]=[];
+  charges[mk].unshift({id:Date.now(),amt,memo,kst:kst()});
+  saveWalCharges(charges);
+  // 용돈 잔액에 충전금액 더하기
+  const w=S.g(K.wallet)||{};
+  w[mk]=(w[mk]||0)+amt;
+  S.s(K.wallet,w);
+  document.getElementById('walChargeAmt').value='';
+  document.getElementById('walChargeMemo').value='';
+  renderBudget();
+  toast('₩'+amt.toLocaleString()+' 충전됐어요 ✓');
+}
+
+function delWalCharge(id){
+  const charges=loadWalCharges();
+  const mk=bMK();
+  const item=charges[mk]?.find(x=>x.id===id);
+  if(!item)return;
+  if(!confirm('이 충전 내역을 삭제할까요? 용돈 잔액에서도 차감돼요.'))return;
+  charges[mk]=charges[mk].filter(x=>x.id!==id);
+  saveWalCharges(charges);
+  // 잔액에서 차감
+  const w=S.g(K.wallet)||{};
+  w[mk]=Math.max(0,(w[mk]||0)-item.amt);
+  S.s(K.wallet,w);
+  renderBudget();
+  toast('삭제됐어요');
+}
+
+function renderWalCharges(){
+  const el=document.getElementById('walChargeList');
+  if(!el)return;
+  const charges=loadWalCharges();
+  const mk=bMK();
+  const list=charges[mk]||[];
+  if(!list.length){
+    el.innerHTML='<div style="font-size:11px;color:var(--tx3);padding:4px 0">충전 내역 없음</div>';
+    return;
+  }
+  el.innerHTML=list.map(x=>`
+    <div class="brow">
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:600;color:#2a5090">+₩${x.amt.toLocaleString()}</div>
+        ${x.memo?`<div style="font-size:10px;color:var(--tx3)">${esc(x.memo)}</div>`:''}
+      </div>
+      <div style="font-size:10px;color:var(--tx3);margin-right:4px">${x.kst||''}</div>
+      <button class="bdel" onclick="delWalCharge(${x.id})" style="opacity:1">×</button>
+    </div>`).join('');
+}
+
 function setWal(){
   const raw=document.getElementById('walInput').value;
   if(raw===''){toast('금액을 입력해주세요');return;}
@@ -2160,6 +2253,7 @@ function renderBudget(){
   document.getElementById('bCalG').innerHTML=ch;
   renderLoans();
   renderSavings();
+  renderWalCharges();
   renderSavingPossible();
   renderAccounts();
 }
@@ -3660,6 +3754,85 @@ function renderSchMemo(){
       </div>
       <button onclick="delSchMemo(${m.id})" style="font-size:11px;background:none;border:none;color:var(--tx3);cursor:pointer;padding:0;flex-shrink:0">×</button>
     </div>`).join('');
+}
+
+// ── 날짜별 투두 달력 ─────────────────────────────────────
+let planMon=new Date();
+let planSelDate=null;
+
+function planChM(d){
+  planMon=new Date(planMon.getFullYear(),planMon.getMonth()+d,1);
+  renderPlanCal();
+}
+
+function renderPlanCal(){
+  const y=planMon.getFullYear(),m=planMon.getMonth();
+  const ml=document.getElementById('planML');
+  if(ml) ml.textContent=`${y}.${p2(m+1)}`;
+
+  // 요일 헤더
+  const lEl=document.getElementById('planCalL');
+  if(lEl) lEl.innerHTML=DK.map(l=>`<div class="clbl">${l}</div>`).join('');
+
+  const fd=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const todK=tdk();
+  const allD=S.g(K.daily)||{};
+
+  let ch='';
+  for(let i=0;i<fd;i++) ch+=`<div class="schcday other"></div>`;
+  for(let d=1;d<=days;d++){
+    const k=`${y}-${p2(m+1)}-${p2(d)}`;
+    const hasTodo=allD[k]&&((allD[k].todos||[]).length>0||(allD[k].vc||0)>0||allD[k].memo);
+    const isToday=k===todK?'td':'';
+    const isSel=k===planSelDate?'style="outline:2px solid #7a90b0"':'';
+    const dot=hasTodo?`<div style="width:5px;height:5px;border-radius:50%;background:#7a90b0;margin:2px auto 0"></div>`:'';
+    ch+=`<div class="schcday ${isToday}" ${isSel} onclick="selectPlanDay('${k}')" style="cursor:pointer">
+      <div class="schcday-num">${d}</div>${dot}
+    </div>`;
+  }
+  const gEl=document.getElementById('planCalG');
+  if(gEl) gEl.innerHTML=ch;
+
+  if(planSelDate) renderPlanDayTodos(planSelDate);
+}
+
+function selectPlanDay(k){
+  planSelDate=k;
+  renderPlanCal();
+  renderPlanDayTodos(k);
+}
+
+function renderPlanDayTodos(k){
+  const lbl=document.getElementById('planDayLbl');
+  const el=document.getElementById('planDayTodos');
+  if(!lbl||!el) return;
+
+  const d=new Date(k);
+  lbl.textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${DK[d.getDay()]})`;
+
+  const allD=S.g(K.daily)||{};
+  const day=allD[k];
+  const todos=day?.todos||[];
+  const memo=day?.memo||'';
+  const vc=day?.vc||0;
+
+  if(!todos.length && !memo && !vc){
+    el.innerHTML='<div style="font-size:10px;color:var(--tx3)">기록 없음</div>';
+    return;
+  }
+
+  let html='';
+  if(vc) html+=`<div style="font-size:10px;color:#7a90b0;font-weight:600;margin-bottom:3px">🎬 영상 ${vc}개</div>`;
+  if(todos.length){
+    html+=todos.map(t=>`
+      <div style="display:flex;align-items:center;gap:5px;padding:3px 0">
+        <span style="font-size:10px">${t.done?'✅':'⬜'}</span>
+        <span style="font-size:10px;color:var(--tx);${t.done?'text-decoration:line-through;opacity:.5':''}">${esc(t.text||'')}</span>
+      </div>`).join('');
+  }
+  if(memo) html+=`<div style="font-size:10px;color:var(--tx3);margin-top:4px;padding-top:4px;border-top:1px solid var(--bd);white-space:pre-wrap">${esc(memo)}</div>`;
+  el.innerHTML=html;
 }
 
 // ── UTILS ────────────────────────────────────────────────
