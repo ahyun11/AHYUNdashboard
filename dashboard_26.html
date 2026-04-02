@@ -3636,18 +3636,30 @@ function onDiaryCalClick(date){
   }
 }
 
-// ── 뽀모도로 타이머 ──────────────────────────────────────
+// ── 뽀모도로 타이머 (실제 시간 기반) ──────────────────────
 const POMO_KEY='ahyun_pomo_v1';
 let _pomoFocus=25, _pomoBreak=5;
 let _pomoLeft=25*60, _pomoIsBreak=false;
 let _pomoRunning=false, _pomoTimer=null;
 let _pomoSession=0, _pomoTodayMin=0;
+let _pomoEndTime=null; // 실제 종료 예정 시각 (ms)
+let _pomoWarn5=false;  // 5초 경고 재생 여부
 
 function pomoLoad(){
   const data=S.g(POMO_KEY)||{};
   const today=tdk();
   _pomoTodayMin=data[today]||0;
   updatePomoDisplay();
+  // 알림 권한 요청
+  if('Notification' in window && Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+}
+
+function pomoNotify(title, body){
+  if('Notification' in window && Notification.permission==='granted'){
+    new Notification(title, {body, icon:'', silent:false});
+  }
 }
 
 function pomodoroToggle(){
@@ -3655,46 +3667,101 @@ function pomodoroToggle(){
   else { pomoStart(); }
 }
 
+function pomoBeep(freq,dur){
+  try{
+    const a=new AudioContext();
+    const o=a.createOscillator();
+    const g=a.createGain();
+    o.connect(g);g.connect(a.destination);
+    o.frequency.value=freq;
+    g.gain.setValueAtTime(0.3,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+dur);
+    o.start();o.stop(a.currentTime+dur);
+  }catch(e){}
+}
+
 function pomoStart(){
   _pomoRunning=true;
+  _pomoWarn5=false;
+  _pomoEndTime=Date.now()+_pomoLeft*1000;
   document.getElementById('pomodoroBtn').textContent='⏸ 일시정지';
+
+  clearInterval(_pomoTimer);
   _pomoTimer=setInterval(()=>{
-    _pomoLeft--;
-    // 5초 전 경고음
-    if(_pomoLeft===5&&!_pomoIsBreak){
-      try{const a=new AudioContext();const o=a.createOscillator();const g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=660;g.gain.setValueAtTime(0.2,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+0.3);o.start();o.stop(a.currentTime+0.3);}catch(e){}
+    // 실제 남은 시간 계산
+    const left=Math.max(0,Math.round((_pomoEndTime-Date.now())/1000));
+    _pomoLeft=left;
+
+    // 5초 전 경고음 + 알림 (1회만)
+    if(left===5&&!_pomoIsBreak&&!_pomoWarn5){
+      _pomoWarn5=true;
+      pomoBeep(660,0.3);
+      pomoNotify('🍅 5초 남았어요!', '뽀모도로 세션이 곧 끝나요!');
     }
-    if(_pomoLeft<=0){
-      // 세션 완료
-      if(!_pomoIsBreak){
-        _pomoSession++;
-        // 집중 시간 저장
-        _pomoTodayMin+=_pomoFocus;
-        const data=S.g(POMO_KEY)||{};
-        const today=tdk();
-        data[today]=_pomoTodayMin;
-        S.s(POMO_KEY,data);
-        toast('🍅 집중 완료! 휴식하세요 😊');
-      } else {
-        toast('😊 휴식 끝! 다시 집중해봐요');
-      }
-      _pomoIsBreak=!_pomoIsBreak;
-      _pomoLeft=(_pomoIsBreak?_pomoBreak:_pomoFocus)*60;
+
+    if(left<=0){
       clearInterval(_pomoTimer);
       _pomoRunning=false;
+      if(!_pomoIsBreak){
+        _pomoSession++;
+        _pomoTodayMin+=_pomoFocus;
+        const data=S.g(POMO_KEY)||{};
+        data[tdk()]=_pomoTodayMin;
+        S.s(POMO_KEY,data);
+        toast('🍅 집중 완료! 휴식하세요 😊');
+        pomoNotify('🍅 집중 완료!', '수고했어요! 이제 휴식하세요 😊');
+      } else {
+        toast('😊 휴식 끝! 다시 집중해봐요');
+        pomoNotify('😊 휴식 끝!', '다시 집중해봐요!');
+      }
+      pomoBeep(880,0.8);
+      _pomoIsBreak=!_pomoIsBreak;
+      _pomoLeft=(_pomoIsBreak?_pomoBreak:_pomoFocus)*60;
       document.getElementById('pomodoroBtn').textContent='▶ 시작';
-      // 알림음
-      try{const a=new AudioContext();const o=a.createOscillator();const g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.setValueAtTime(0.3,a.currentTime);g.gain.exponentialRampToValueAtTime(0.01,a.currentTime+0.8);o.start();o.stop(a.currentTime+0.8);}catch(e){}
     }
     updatePomoDisplay();
-  },1000);
+  },500); // 500ms마다 체크 (더 정밀하게)
 }
 
 function pomoPause(){
   _pomoRunning=false;
   clearInterval(_pomoTimer);
+  // 남은 시간 저장
+  _pomoLeft=Math.max(0,Math.round((_pomoEndTime-Date.now())/1000));
+  _pomoEndTime=null;
   document.getElementById('pomodoroBtn').textContent='▶ 계속';
 }
+
+// 탭 복귀 시 시간 동기화
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&_pomoRunning&&_pomoEndTime){
+    const left=Math.max(0,Math.round((_pomoEndTime-Date.now())/1000));
+    _pomoLeft=left;
+    updatePomoDisplay();
+    if(left<=0){
+      // 타이머가 백그라운드에서 끝난 경우
+      clearInterval(_pomoTimer);
+      _pomoRunning=false;
+      if(!_pomoIsBreak){
+        _pomoSession++;
+        _pomoTodayMin+=_pomoFocus;
+        const data=S.g(POMO_KEY)||{};
+        data[tdk()]=_pomoTodayMin;
+        S.s(POMO_KEY,data);
+      }
+      pomoBeep(880,0.8);
+      pomoNotify(
+        _pomoIsBreak?'🍅 집중 완료!':'😊 휴식 끝!',
+        _pomoIsBreak?'수고했어요! 이제 휴식하세요 😊':'다시 집중해봐요!'
+      );
+      _pomoIsBreak=!_pomoIsBreak;
+      _pomoLeft=(_pomoIsBreak?_pomoBreak:_pomoFocus)*60;
+      document.getElementById('pomodoroBtn').textContent='▶ 시작';
+      toast(_pomoIsBreak?'🍅 집중 완료! 휴식하세요 😊':'😊 휴식 끝! 다시 집중해봐요');
+      updatePomoDisplay();
+    }
+  }
+});
 
 function pomodoroReset(){
   clearInterval(_pomoTimer);
