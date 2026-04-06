@@ -2354,12 +2354,7 @@ function getCP(type){
 }
 
 function addCard(type){
-  // 사용기간 체크 — 날짜(일)만 비교
-  const p=getCP(type);
-  const now=new Date();
-  const todayD=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const toD=new Date(p.to.getFullYear(),p.to.getMonth(),p.to.getDate());
-  if(todayD>toD){toast('다음달 카드 사용내역에 써주세요 !');return;}
+  // 날짜 제한 없이 자유 입력
 
   const nEl=document.getElementById(type==='sh'?'shName':'hyName');
   const aEl=document.getElementById(type==='sh'?'shAmt':'hyAmt');
