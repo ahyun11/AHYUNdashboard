@@ -391,6 +391,15 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
   </div>
   <div class="card">
     <div id="ttList" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bd);text-align:center">
+      <div id="ttTodayStat" style="font-size:13px;font-weight:700;color:#1e3050"></div>
+    </div>
+  </div>
+
+  <!-- 날짜별 완료 기록 -->
+  <div class="slbl" style="margin-top:12px">📅 날짜별 완료 기록</div>
+  <div class="card">
+    <div id="ttHistoryList" style="display:flex;flex-direction:column;gap:6px"></div>
   </div>
 </div>
 
@@ -1609,7 +1618,7 @@ function sw(v,btn){
   }
   if(v==='diary') renderDiary();
   if(v==='today') { loadDay(); renderRoutines(); }
-  if(v==='timetable') renderTT();
+  if(v==='timetable'){renderTT();renderTTStat();}
 }
 
 // ── TODAY ────────────────────────────────────────────────
@@ -4182,11 +4191,30 @@ function renderTT(){
       <button class="bdel" onclick="delTT(${t.id})" style="opacity:1;width:18px;height:18px">×</button>
     </div>`;
   }).join('');
+  renderTTStat();
 }
 
 function togTT(id){
-  const items=loadTT().map(x=>x.id===id?{...x,done:!x.done}:x);
-  saveTT(items);renderTT();
+  const items=loadTT().map(x=>{
+    if(x.id!==id) return x;
+    const done=!x.done;
+    return {...x,done,doneAt:done?kst():null};
+  });
+  saveTT(items);
+  saveTTHistory();
+  renderTT();
+}
+
+const TT_HIST_KEY='ahyun_tt_history_v1';
+function loadTTHist(){return S.g(TT_HIST_KEY)||{};}
+function saveTTHistory(){
+  const items=loadTT();
+  const done=items.filter(x=>x.done).length;
+  const total=items.length;
+  const today=tdk();
+  const hist=loadTTHist();
+  hist[today]={done,total,updatedAt:kst()};
+  S.s(TT_HIST_KEY,hist);
 }
 
 function delTT(id){
@@ -4224,6 +4252,44 @@ function saveTTEdit(){
 
 // 1분마다 현재 시간 박스 갱신
 setInterval(()=>{if(document.getElementById('vw-timetable').classList.contains('on'))renderTT();},60000);
+
+function renderTTStat(){
+  const items=loadTT();
+  const done=items.filter(x=>x.done).length;
+  const total=items.length;
+  const pct=total>0?Math.round(done/total*100):0;
+  const statEl=document.getElementById('ttTodayStat');
+  if(statEl){
+    if(done===total&&total>0){
+      statEl.innerHTML=`🎉 타임테이블 ${done}개 완료! 오늘 하루 수고했어요!`;
+    } else {
+      statEl.innerHTML=`타임테이블 <span style="color:#5e7290;font-size:15px">${done}</span> / ${total}개 완료 (${pct}%)`;
+    }
+  }
+  // 히스토리
+  const histEl=document.getElementById('ttHistoryList');
+  if(!histEl)return;
+  const hist=loadTTHist();
+  const keys=Object.keys(hist).sort().reverse().slice(0,14);
+  if(!keys.length){
+    histEl.innerHTML='<div style="font-size:11px;color:var(--tx3);padding:4px 0">아직 기록이 없어요</div>';
+    return;
+  }
+  histEl.innerHTML=keys.map(k=>{
+    const {done,total}=hist[k];
+    const pct=total>0?Math.round(done/total*100):0;
+    const d=new Date(k);
+    const label=`${d.getMonth()+1}월 ${d.getDate()}일 (${DK[d.getDay()]})`;
+    const barW=pct;
+    return`<div style="padding:6px 0;border-bottom:1px solid var(--bd)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:11px;font-weight:600;color:#1e3050">${label}</span>
+        <span style="font-size:11px;color:#5e7290;font-weight:600">${done}/${total}개 · ${pct}%</span>
+      </div>
+      <div class="pb"><div class="pf" style="width:${barW}%;background:${pct===100?'#5e7290':'#7a90b0'}"></div></div>
+    </div>`;
+  }).join('');
+}
 
 // ── UTILS ────────────────────────────────────────────────
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
