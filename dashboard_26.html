@@ -232,6 +232,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 .tb-schedule:hover:not(.on){border-top:3px solid #e8a0b880}
 .tb-plan.on{border-top:3px solid #85aad0}
 .tb-plan:hover:not(.on){border-top:3px solid #85aad080}
+.tb-timetable.on{border-top:3px solid #9ab0c8}
+.tb-timetable:hover:not(.on){border-top:3px solid #9ab0c880}
 .tb-today.on{border-top:3px solid #85b89a}
 .tb-today:hover:not(.on){border-top:3px solid #85b89a80}
 .tb-stats.on{border-top:3px solid #c8a870}
@@ -263,6 +265,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     <button class="tb tb-mandart" onclick="sw('mandart',this)">만다라트</button>
     <button class="tb tb-schedule" onclick="sw('schedule',this)">스케줄</button>
     <button class="tb tb-plan" onclick="sw('plan',this)">To do</button>
+    <button class="tb tb-timetable" onclick="sw('timetable',this)">타임테이블</button>
     <button class="tb tb-today" onclick="sw('today',this)">오늘</button>
     <button class="tb tb-stats" onclick="sw('stats',this)">통계</button>
     <button class="tb tb-budget" onclick="sw('budget',this)">가계부</button>
@@ -378,6 +381,17 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     </div>
   </div>
 
+</div>
+
+<!-- ===== 타임테이블 ===== -->
+<div class="vw" id="vw-timetable">
+  <div class="slbl" style="display:flex;align-items:center;justify-content:space-between;margin-top:0">
+    ⏰ 타임테이블
+    <button onclick="addTTItem()" class="btn btn-p btn-s" style="font-size:11px">+ 추가</button>
+  </div>
+  <div class="card">
+    <div id="ttList" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
 </div>
 
 <!-- ===== 만다라트 ===== -->
@@ -1045,6 +1059,25 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 <div class="toast" id="toast"></div>
 
 <!-- 대출 수정 모달 -->
+<!-- 타임테이블 수정 모달 -->
+<div id="ttEditModal" style="display:none;position:fixed;inset:0;background:rgba(24,32,43,.45);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--r);padding:22px;width:88%;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px">⏰ 일정 수정</div>
+    <div style="margin-bottom:8px">
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">시간</div>
+      <input class="inp" id="ttEditTime" placeholder="예: 10:00" style="width:100%;font-size:12px" onkeydown="if(event.key==='Enter')document.getElementById('ttEditLabel').focus()">
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">내용</div>
+      <input class="inp" id="ttEditLabel" placeholder="예: 영상 6개 작업" style="width:100%;font-size:12px" onkeydown="if(event.key==='Enter')saveTTEdit()">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p" onclick="saveTTEdit()" style="flex:1">저장</button>
+      <button class="btn" onclick="closeTTEdit()">취소</button>
+    </div>
+  </div>
+</div>
+
 <!-- 투두 수정 모달 -->
 <div id="todoEditModal" style="display:none;position:fixed;inset:0;background:rgba(24,32,43,.45);z-index:200;align-items:center;justify-content:center">
   <div style="background:var(--sf);border:1px solid var(--bd2);border-radius:var(--r);padding:22px;width:88%;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.2)">
@@ -1576,6 +1609,7 @@ function sw(v,btn){
   }
   if(v==='diary') renderDiary();
   if(v==='today') { loadDay(); renderRoutines(); }
+  if(v==='timetable') renderTT();
 }
 
 // ── TODAY ────────────────────────────────────────────────
@@ -4102,6 +4136,94 @@ function updateCalcDisplay(){
   document.getElementById('calcDisplay').textContent=formatted;
   document.getElementById('calcExpr').textContent=_calcExpr.replace('*','×').replace('/','÷');
 }
+
+// ── 타임테이블 ───────────────────────────────────────────
+const TT_KEY='ahyun_timetable_v1';
+const TT_DEFAULT=[
+  {id:1,time:'09:00',label:'기상 · 씻기',done:false},
+  {id:2,time:'09:30',label:'아점 🍚',done:false},
+  {id:3,time:'09:50',label:'뉴스레터 확인',done:false},
+  {id:4,time:'10:00',label:'작업 시작 → 영상 제작',done:false},
+  {id:5,time:'15:00',label:'운동 · 씻기',done:false},
+  {id:6,time:'16:30',label:'SNS · 유튜브 · 미리캔버스 업로드',done:false},
+  {id:7,time:'18:30',label:'포트폴리오 작업',done:false},
+  {id:8,time:'19:30',label:'AI · 디자인툴 공부',done:false},
+  {id:9,time:'20:00',label:'저녁 🍚',done:false},
+  {id:10,time:'20:30',label:'수입기록 · 일과정리',done:false},
+];
+
+function loadTT(){return S.g(TT_KEY)||TT_DEFAULT;}
+function saveTT(d){S.s(TT_KEY,d);}
+
+function getNowMin(){const n=new Date();return n.getHours()*60+n.getMinutes();}
+function timeToMin(t){const [h,m]=(t||'').split(':').map(Number);return(h||0)*60+(m||0);}
+
+function renderTT(){
+  const el=document.getElementById('ttList');
+  if(!el)return;
+  const items=loadTT();
+  const nowMin=getNowMin();
+  el.innerHTML=items.map((t,i)=>{
+    const tMin=timeToMin(t.time);
+    const nextMin=items[i+1]?timeToMin(items[i+1].time):tMin+60;
+    const isCurrent=nowMin>=tMin&&nowMin<nextMin;
+    const isPast=nowMin>=nextMin;
+    return`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+      background:${isCurrent?'rgba(94,114,144,.25)':isPast?'rgba(147,164,193,.08)':'rgba(211,223,242,.2)'};
+      border:${isCurrent?'1.5px solid #5e7290':'1px solid rgba(147,164,193,.2)'};
+      opacity:${t.done?'.5':'1'}">
+      <span style="font-size:11px;font-weight:700;color:${isCurrent?'#1e3050':'#5e7290'};min-width:38px">${t.time}</span>
+      <span style="flex:1;font-size:12px;font-weight:${isCurrent?'700':'500'};color:${t.done?'var(--tx3)':'#1e3050'};
+        ${t.done?'text-decoration:line-through':''}">${esc(t.label)}</span>
+      ${isCurrent?'<span style="font-size:9px;background:#5e7290;color:#fff;padding:1px 5px;border-radius:4px">지금</span>':''}
+      <input type="checkbox" ${t.done?'checked':''} onclick="togTT(${t.id})"
+        style="cursor:pointer;accent-color:#7a90b0;width:15px;height:15px;flex-shrink:0">
+      <button class="bedit" onclick="openTTEdit(${t.id})" style="opacity:1;width:18px;height:18px;font-size:10px">✎</button>
+      <button class="bdel" onclick="delTT(${t.id})" style="opacity:1;width:18px;height:18px">×</button>
+    </div>`;
+  }).join('');
+}
+
+function togTT(id){
+  const items=loadTT().map(x=>x.id===id?{...x,done:!x.done}:x);
+  saveTT(items);renderTT();
+}
+
+function delTT(id){
+  saveTT(loadTT().filter(x=>x.id!==id));renderTT();
+}
+
+function addTTItem(){
+  const items=loadTT();
+  const newItem={id:Date.now(),time:'',label:'새 일정',done:false};
+  items.push(newItem);
+  saveTT(items);renderTT();
+  openTTEdit(newItem.id);
+}
+
+let _ttEditId=null;
+function openTTEdit(id){
+  const t=loadTT().find(x=>x.id===id);
+  if(!t)return;
+  _ttEditId=id;
+  document.getElementById('ttEditTime').value=t.time||'';
+  document.getElementById('ttEditLabel').value=t.label||'';
+  document.getElementById('ttEditModal').style.display='flex';
+}
+function closeTTEdit(){document.getElementById('ttEditModal').style.display='none';_ttEditId=null;}
+function saveTTEdit(){
+  if(!_ttEditId)return;
+  const time=document.getElementById('ttEditTime').value.trim();
+  const label=document.getElementById('ttEditLabel').value.trim();
+  if(!label){toast('내용을 입력해주세요');return;}
+  const items=loadTT().map(x=>x.id===_ttEditId?{...x,time,label}:x);
+  // 시간순 정렬
+  items.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+  saveTT(items);closeTTEdit();renderTT();toast('수정됐어요 ✓');
+}
+
+// 1분마다 현재 시간 박스 갱신
+setInterval(()=>{if(document.getElementById('vw-timetable').classList.contains('on'))renderTT();},60000);
 
 // ── UTILS ────────────────────────────────────────────────
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
