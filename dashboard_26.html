@@ -1260,23 +1260,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
 </div>
 
 <script>
-function sw(v,btn){
-  document.querySelectorAll('.vw').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'));
-  document.getElementById('vw-'+v).classList.add('on');
-  if(btn) btn.classList.add('on');
-  if(v==='stats')    renderStats();
-  if(v==='plan')     {pomoLoad();renderTodos();}
-  if(v==='budget')   {renderBudget();renderCards();}
-  if(v==='plan')     renderPlanCal();
-  if(v==='schedule') {renderSchMemo();renderSch();}
-  if(v==='mandart'){
-    if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
-  }
-  if(v==='diary')    renderDiary();
-  if(v==='today')    {loadDay();renderRoutines();}
-  if(v==='timetable'){renderTT();renderTTStat();}
-}
 
 // ── STORAGE ──────────────────────────────────────────────
 // ── 카드 데이터 완전 초기화 후 2026-03만 복원 ──────────
@@ -2009,6 +1992,24 @@ document.addEventListener('click',e=>{
 });
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2000);}
+
+// ── 탭 전환 ──────────────────────────────────────────────
+function sw(v,btn){
+  document.querySelectorAll('.vw').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'));
+  document.getElementById('vw-'+v).classList.add('on');
+  if(btn) btn.classList.add('on');
+  if(v==='stats')    renderStats();
+  if(v==='plan')     {pomoLoad();renderTodos();renderPlanCal();}
+  if(v==='budget')   {renderBudget();renderCards();}
+  if(v==='schedule') {renderSchMemo();renderSch();}
+  if(v==='mandart'){
+    if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
+  }
+  if(v==='diary')    renderDiary();
+  if(v==='today')    {loadDay();renderRoutines();}
+  if(v==='timetable'){renderTT();renderTTStat();}
+}
 
 // ── 초기화 ────────────────────────────────────────────────
 (async function init(){
