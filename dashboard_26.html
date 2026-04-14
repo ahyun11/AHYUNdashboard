@@ -1564,8 +1564,13 @@ function guessCat(name){
 
 // ── 초기 데이터 주입 (최초 1회) ─────────────────────────
 async function injectInitialData(){
-  // 자동 주입 완전 비활성화 - 데이터 보호
-  return;
+  // 4월 영상 데이터만 추가 (기존 데이터 덮어쓰지 않음)
+  const ahd = S.g(K.daily) || {};
+  let changed = false;
+  if(!ahd['2026-04-03']){ahd['2026-04-03']={vc:6,inc:150000,rt:{},memo:'',rs:0,savedAt:'2026.04.03 23:00'};changed=true;}
+  if(!ahd['2026-04-07']){ahd['2026-04-07']={vc:4,inc:100000,rt:{},memo:'',rs:0,savedAt:'2026.04.07 23:00'};changed=true;}
+  if(!ahd['2026-04-13']){ahd['2026-04-13']={vc:4,inc:100000,rt:{},memo:'',rs:0,savedAt:'2026.04.13 23:00'};changed=true;}
+  if(changed) S.s(K.daily, ahd);
 }
 
 async function fetchWeather(){
