@@ -1999,16 +1999,19 @@ function sw(v,btn){
   document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'));
   document.getElementById('vw-'+v).classList.add('on');
   if(btn) btn.classList.add('on');
-  if(v==='stats')    renderStats();
-  if(v==='plan')     {pomoLoad();renderTodos();renderPlanCal();}
-  if(v==='budget')   {renderBudget();renderCards();}
-  if(v==='schedule') {renderSchMemo();renderSch();}
-  if(v==='mandart'){
-    if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
-  }
-  if(v==='diary')    renderDiary();
-  if(v==='today')    {loadDay();renderRoutines();}
-  if(v==='timetable'){renderTT();renderTTStat();}
+  // 함수가 정의된 후 실행되도록 setTimeout 사용
+  setTimeout(()=>{
+    if(v==='stats'    && typeof renderStats==='function')    renderStats();
+    if(v==='plan'     && typeof renderTodos==='function')    {pomoLoad();renderTodos();renderPlanCal();}
+    if(v==='budget'   && typeof renderBudget==='function')   {renderBudget();renderCards();}
+    if(v==='schedule' && typeof renderSch==='function')      {renderSchMemo();renderSch();}
+    if(v==='mandart'  && typeof renderMandart==='function'){
+      if(!_cache){ jbLoad().then(renderMandart); } else { renderMandart(); }
+    }
+    if(v==='diary'    && typeof renderDiary==='function')    renderDiary();
+    if(v==='today'    && typeof loadDay==='function')        {loadDay();renderRoutines();}
+    if(v==='timetable'&& typeof renderTT==='function')       {renderTT();renderTTStat();}
+  },0);
 }
 
 // ── 초기화 ────────────────────────────────────────────────
