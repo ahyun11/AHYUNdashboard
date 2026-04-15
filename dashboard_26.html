@@ -447,6 +447,29 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
     <div class="pb"><div class="pf" id="targetBar" style="width:0%"></div></div>
   </div>
 
+  <!-- 네이버 카페 알바 -->
+  <div class="slbl">🖥️ 네이버 카페 알바</div>
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:40px;font-weight:500;line-height:1;color:var(--tx)">
+          <span id="cafeCount">0</span><span style="font-size:16px;color:var(--tx3);font-weight:400">개</span>
+        </div>
+        <div style="font-size:11px;color:var(--tx2);margin-top:2px">완료 계정</div>
+      </div>
+      <div style="flex:1;padding-left:14px;border-left:1px solid var(--bd)">
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:3px">오늘 카페 수입 (세전)</div>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:20px;font-weight:700;color:#0f1d30" id="cafeEarning">₩0</div>
+        <div style="font-size:10px;color:var(--tx3);margin-top:2px">완료 × 3,000원 &nbsp;·&nbsp; 3.3% 세후 <span style="font-family:'Noto Sans KR',sans-serif;font-weight:700;color:#1e3050" id="cafeAfterTax">₩0</span></div>
+      </div>
+    </div>
+    <div id="cafeAccList" style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(147,164,193,.5) transparent"></div>
+    <div style="display:flex;gap:5px;padding-top:8px;border-top:1px solid var(--bd)">
+      <input class="inp" id="cafeAccInput" placeholder="계정명 추가 후 Enter..." style="flex:1;font-size:11px;padding:5px 8px" onkeydown="if(event.key==='Enter')addCafeAcc()">
+      <button class="btn btn-p btn-s" onclick="addCafeAcc()">+ 추가</button>
+    </div>
+  </div>
+
   <!-- 부수입 -->
   <div class="slbl">💵 부수입</div>
   <div class="card" style="margin-bottom:10px">
@@ -466,6 +489,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
   <div class="slbl">💰 오늘 수입</div>
   <div class="card" style="margin-bottom:10px">
     <div style="display:flex;align-items:center;gap:9px"><div style="width:7px;height:7px;border-radius:50%;background:var(--ac2);flex-shrink:0"></div><div style="font-size:12px;color:#1e3050;min-width:55px;font-weight:600">영상 수입</div><div style="flex:1;font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;color:#0f1d30" id="incomeDisplay">₩0</div><input type="hidden" id="incomeInput"></div>
+    <div style="display:flex;align-items:center;gap:9px;margin-top:5px"><div style="width:7px;height:7px;border-radius:50%;background:#7a9a7a;flex-shrink:0"></div><div style="font-size:12px;color:#1e3050;min-width:55px;font-weight:600">카페 수입</div><div style="flex:1;font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;color:#0f1d30" id="cafeIncDisplay">₩0</div></div>
     <div style="display:flex;align-items:center;gap:9px;margin-top:5px"><div style="font-size:12px;color:#1e3050;min-width:55px;font-weight:600">부수입</div><div style="flex:1;font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:700;color:#0f1d30" id="sideIncDisplay">₩0</div></div>
     <div style="display:flex;align-items:center;gap:9px;margin-top:5px;padding-top:6px;border-top:1px solid var(--bd)"><div style="font-size:12px;color:#0f1d30;min-width:55px;font-weight:700">총 수입</div><div style="flex:1;font-family:'Noto Sans KR',sans-serif;font-size:18px;font-weight:700;color:#0f1d30" id="totalIncDisplay">₩0</div></div>
     <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:9px"><div style="font-size:11px;color:var(--tx2);min-width:55px">3.3% 세후</div><div style="font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:600;color:#1e3050" id="afterTaxDisplay">₩0</div></div>
@@ -564,14 +588,28 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <div style="font-size:10px;color:var(--tx3);margin-top:4px">세전 합산</div>
     </div>
   </div>
+  <div class="g2" style="margin-bottom:8px">
+    <div class="card">
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">이달 카페 수입 (세전)</div>
+      <div class="mono" style="font-size:22px;font-weight:700;color:#0f1d30" id="stCafeInc">₩0</div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:4px">완료 <span id="stCafeDone" style="font-weight:700;color:#1e3050">0</span>계정 × 3,000원</div>
+    </div>
+    <div class="card">
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">카페 세후</div>
+      <div class="mono" style="font-size:22px;font-weight:700;color:#0f1d30" id="stCafeAfter">₩0</div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:4px">3.3% 공제 후</div>
+    </div>
+  </div>
   <div class="g2" style="margin-bottom:10px">
     <div class="card">
       <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">총 수입 세전</div>
       <div class="mono" style="font-size:18px;font-weight:700;color:#0f1d30" id="stI">₩0</div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:3px">영상 + 카페 + 부수입</div>
     </div>
     <div class="card">
       <div style="font-size:10px;color:var(--tx3);margin-bottom:3px">세후 실수령</div>
       <div class="mono" style="font-size:18px;font-weight:700;color:#0f1d30" id="stA">₩0</div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:3px">(영상+카페) 3.3% 세후 + 부수입</div>
     </div>
   </div>
   <!-- 다음달 10일 예상 월급 -->
@@ -580,7 +618,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:#bcc8d8;color:var(--tx);mi
       <div>
         <div style="font-size:13px;font-weight:700;letter-spacing:.3px;color:var(--tx2);margin-bottom:4px">다음달 10일 예상 월급</div>
         <div style="font-family:'Noto Sans KR',sans-serif;font-size:28px;font-weight:700;color:#0f1d30" id="stSal">₩0</div>
-        <div style="font-size:11px;color:var(--tx3)">영상수입 3.3% 세후 + 부수입</div>
+        <div style="font-size:11px;color:var(--tx3)">영상+카페 3.3% 세후 + 부수입</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:11px;color:var(--tx3)">영상 <span class="mono" style="color:var(--tx2)" id="stVn">0</span>개</div>
@@ -1779,14 +1817,17 @@ function updateInc(){
   const logInc=(ST.videoLog||[]).reduce((s,v)=>s+Math.round((v.rate||2.5)*10000),0);
   ST.inc=logInc;
   const sideTotal=(ST.sideInc||[]).reduce((s,x)=>s+x.amt,0);
+  const cafeInc=getCafeIncome();
   document.getElementById('incomeInput').value=ST.inc;
   document.getElementById('earningToday').textContent='₩'+ST.inc.toLocaleString();
   document.getElementById('incomeDisplay').textContent='₩'+ST.inc.toLocaleString();
+  const cafeIncEl=document.getElementById('cafeIncDisplay');
+  if(cafeIncEl)cafeIncEl.textContent='₩'+cafeInc.toLocaleString();
   const sideEl=document.getElementById('sideIncDisplay');
   if(sideEl)sideEl.textContent='₩'+sideTotal.toLocaleString();
   const totalEl=document.getElementById('totalIncDisplay');
-  if(totalEl)totalEl.textContent='₩'+(ST.inc+sideTotal).toLocaleString();
-  document.getElementById('afterTaxDisplay').textContent='₩'+(Math.round(ST.inc*.967)+sideTotal).toLocaleString();
+  if(totalEl)totalEl.textContent='₩'+(ST.inc+cafeInc+sideTotal).toLocaleString();
+  document.getElementById('afterTaxDisplay').textContent='₩'+(Math.round((ST.inc+cafeInc)*.967)+sideTotal).toLocaleString();
 }
 function saveToday(){
   ST.memo=document.getElementById('memoInput').value;
@@ -1802,6 +1843,8 @@ function saveToday(){
     rate:ST.rate||2.5,
     videoLog:ST.videoLog||[],
     sideInc:ST.sideInc||[],
+    cafeInc:getCafeIncome(),
+    cafeDone:cafeAccounts.filter(cafeIsDone).length,
     rs:Object.values(ST.rt).filter(Boolean).length,
     savedAt:kst(),
   };
@@ -2055,20 +2098,26 @@ function renderStats(){
   const days=new Date(y,m+1,0).getDate();
   let tv=0,mData=[];
   let totalSideInc=0;
+  let totalCafeInc=0;
+  let totalCafeDone=0;
   for(let d=1;d<=days;d++){
     const k=y+'-'+p2(m+1)+'-'+p2(d);
     const e=all[k];
     if(e){
       tv+=(e.vc||0);
       totalSideInc+=(e.sideInc||[]).reduce((s,x)=>s+x.amt,0);
+      totalCafeInc+=(e.cafeInc||0);
+      totalCafeDone+=(e.cafeDone||0);
     }
     mData.push({d,k,e:e||null});
   }
   // 이달 영상수입 (각 날짜의 rate 사용)
   let totalVideoInc=0;
   mData.forEach(({e})=>{if(e)totalVideoInc+=Math.round((e.vc||0)*(e.rate||2.5)*10000);});
-  const bt=totalVideoInc,tx=Math.round(bt*.033),at=bt-tx;
-  const totalSal=at+totalSideInc; // 세후 영상수입 + 부수입
+  const bt=totalVideoInc+totalCafeInc;
+  const tx=Math.round(bt*.033);
+  const at=bt-tx;
+  const totalSal=at+totalSideInc;
 
   // 요약
   document.getElementById('stV').textContent=tv+'개';
@@ -2076,8 +2125,15 @@ function renderStats(){
   document.getElementById('stVGoal').textContent=tv+'/150개'+(tv>=150?' 🎉 목표달성!':'');
   document.getElementById('stVBar').style.width=vPct+'%';
   document.getElementById('stSideInc').textContent='₩'+totalSideInc.toLocaleString();
-  document.getElementById('stI').textContent='₩'+bt.toLocaleString();
-  document.getElementById('stA').textContent='₩'+at.toLocaleString();
+  // 카페 수입
+  const stCafeEl=document.getElementById('stCafeInc');
+  if(stCafeEl)stCafeEl.textContent='₩'+totalCafeInc.toLocaleString();
+  const stCafeDoneEl=document.getElementById('stCafeDone');
+  if(stCafeDoneEl)stCafeDoneEl.textContent=totalCafeDone;
+  const stCafeAfterEl=document.getElementById('stCafeAfter');
+  if(stCafeAfterEl)stCafeAfterEl.textContent='₩'+Math.round(totalCafeInc*.967).toLocaleString();
+  document.getElementById('stI').textContent='₩'+(totalVideoInc+totalCafeInc+totalSideInc).toLocaleString();
+  document.getElementById('stA').textContent='₩'+totalSal.toLocaleString();
 
   // 다음달 예상월급 (부수입 포함)
   document.getElementById('stSal').textContent='₩'+totalSal.toLocaleString();
@@ -2107,11 +2163,14 @@ function renderStats(){
     const rate=e?(e.rate||2.5):2.5;
     const vInc=Math.round(v*rate*10000);
     const sInc=(e&&e.sideInc)?(e.sideInc||[]).reduce((s,x)=>s+x.amt,0):0;
+    const cInc=(e&&e.cafeInc)?e.cafeInc:0;
     const vAfter=Math.round(vInc*.967);
+    const cAfter=Math.round(cInc*.967);
     let inner='<div style="font-size:11px;font-weight:700;line-height:1.3;text-align:center">'+d+'</div>';
     if(v>0) inner+='<div style="font-size:11px;font-weight:400;color:#fff;line-height:1.3;text-align:center">🎬'+v+'개</div><div style="font-size:11px;font-weight:400;color:#fff;line-height:1.3;text-align:center">+₩'+(vAfter/10000).toFixed(1)+'만</div>';
+    if(cInc>0) inner+='<div style="font-size:11px;font-weight:400;color:#fff;line-height:1.3;text-align:center">🖥️+₩'+(cAfter/10000).toFixed(1)+'만</div>';
     if(sInc>0) inner+='<div style="font-size:11px;font-weight:700;color:#1e3050;line-height:1.3;text-align:center">💰+₩'+(sInc/10000).toFixed(1)+'만</div>';
-    if(v>0||sInc>0){const tot=vAfter+sInc;inner+='<div style="font-size:11px;font-weight:700;color:#4a5e78;line-height:1.3;text-align:center;border-top:1px solid rgba(30,48,80,.15);margin-top:2px;padding-top:1px">계₩'+(tot/10000).toFixed(1)+'만</div>';}
+    if(v>0||sInc>0||cInc>0){const tot=vAfter+cAfter+sInc;inner+='<div style="font-size:11px;font-weight:700;color:#4a5e78;line-height:1.3;text-align:center;border-top:1px solid rgba(30,48,80,.15);margin-top:2px;padding-top:1px">계₩'+(tot/10000).toFixed(1)+'만</div>';}
     ch+='<div class="cday '+cl+' '+(k===todK?'td':'')+'" style="text-align:center;padding:3px 2px;line-height:1.3;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">'+inner+'</div>';
   });
   document.getElementById('stCalG').innerHTML=ch;
@@ -2121,9 +2180,12 @@ function renderStats(){
   document.getElementById('stHist').innerHTML=hist.length?hist.map(({d,e})=>{
     const rs=e.rs||0;
     const sInc=(e.sideInc||[]).reduce((s,x)=>s+x.amt,0);
+    const cInc=e.cafeInc||0;
+    const cDone=e.cafeDone||0;
     return'<div style="display:flex;align-items:center;gap:8px;padding:7px;border-radius:5px;background:var(--sf2);margin-bottom:5px">'
       +'<span class="mono" style="font-size:11px;color:var(--tx3);min-width:24px">'+p2(d)+'일</span>'
       +'<span class="bg bg-g">'+(e.vc||0)+'개</span>'
+      +(cInc?'<span class="bg" style="background:rgba(80,140,80,.18);color:#084020">🖥️'+cDone+'계정 +₩'+cInc.toLocaleString()+'</span>':'')
       +(sInc?'<span class="bg bg-a">부+₩'+sInc.toLocaleString()+'</span>':'')
       +'<span class="bg bg-a">루틴 '+rs+'/'+ROUTINES.length+'</span>'
       +'<span style="flex:1"></span>'
@@ -4298,6 +4360,108 @@ document.addEventListener('click',e=>{
   const lm=document.getElementById('loanEditModal');
   if(lm&&lm.style.display==='flex'&&e.target===lm) closeLoanEdit();
 });
+
+// ===== 네이버 카페 알바 =====
+const CAFE_KEY='ahyun_cafe_v1';
+const CAFE_DATE_KEY='ahyun_cafe_date';
+let cafeAccounts=[];
+
+function loadCafeAccounts(){
+  const today=tdk();
+  const saved=S.g(CAFE_KEY)||[];
+  const savedDate=localStorage.getItem(CAFE_DATE_KEY)||'';
+  if(savedDate!==today){
+    // 날짜 바뀌면 체크만 초기화, 계정 목록은 유지
+    cafeAccounts=saved.map(a=>({...a,post:false,c1:false,c2:false,c3:false}));
+    localStorage.setItem(CAFE_DATE_KEY,today);
+    saveCafeAccounts();
+  } else {
+    cafeAccounts=saved;
+  }
+}
+
+function saveCafeAccounts(){
+  S.s(CAFE_KEY,cafeAccounts);
+}
+
+function cafeIsDone(a){return a.post&&a.c1&&a.c2&&a.c3;}
+
+function getCafeIncome(){
+  return cafeAccounts.filter(cafeIsDone).length*3000;
+}
+
+function renderCafeAccounts(){
+  const doneCount=cafeAccounts.filter(cafeIsDone).length;
+  const earning=doneCount*3000;
+  const afterTax=Math.round(earning*0.967);
+  const countEl=document.getElementById('cafeCount');
+  if(countEl)countEl.textContent=doneCount;
+  const earnEl=document.getElementById('cafeEarning');
+  if(earnEl)earnEl.textContent='₩'+earning.toLocaleString();
+  const atEl=document.getElementById('cafeAfterTax');
+  if(atEl)atEl.textContent='₩'+afterTax.toLocaleString();
+  const list=document.getElementById('cafeAccList');
+  if(!list)return;
+  list.innerHTML='';
+  if(cafeAccounts.length===0){
+    list.innerHTML='<div style="font-size:11px;color:var(--tx3);padding:6px 0;text-align:center">계정을 추가해주세요</div>';
+    return;
+  }
+  cafeAccounts.forEach((acc,idx)=>{
+    const done=cafeIsDone(acc);
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:8px;border:1px solid '+(done?'rgba(90,150,100,.4);background:rgba(90,150,100,.07)':'var(--bd);background:rgba(211,223,242,.25)');
+    row.innerHTML=`
+      <span style="font-size:12px;font-weight:600;color:${done?'#0a4020':'var(--tx)'};flex:0 0 auto;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(acc.name)}">${esc(acc.name)}</span>
+      <label style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--tx3);cursor:pointer;white-space:nowrap">
+        <input type="checkbox" ${acc.post?'checked':''} style="accent-color:#5a8a5a;cursor:pointer;width:13px;height:13px" onchange="toggleCafe(${idx},'post')">게시물
+      </label>
+      <label style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--tx3);cursor:pointer;white-space:nowrap">
+        <input type="checkbox" ${acc.c1?'checked':''} style="accent-color:#5a8a5a;cursor:pointer;width:13px;height:13px" onchange="toggleCafe(${idx},'c1')">댓글1
+      </label>
+      <label style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--tx3);cursor:pointer;white-space:nowrap">
+        <input type="checkbox" ${acc.c2?'checked':''} style="accent-color:#5a8a5a;cursor:pointer;width:13px;height:13px" onchange="toggleCafe(${idx},'c2')">댓글2
+      </label>
+      <label style="display:flex;align-items:center;gap:3px;font-size:11px;color:var(--tx3);cursor:pointer;white-space:nowrap">
+        <input type="checkbox" ${acc.c3?'checked':''} style="accent-color:#5a8a5a;cursor:pointer;width:13px;height:13px" onchange="toggleCafe(${idx},'c3')">댓글3
+      </label>
+      ${done?'<span style="font-size:10px;padding:2px 6px;border-radius:99px;background:rgba(80,140,80,.2);color:#084020;font-weight:700;white-space:nowrap;margin-left:auto">+3,000원</span>':'<span style="flex:1"></span>'}
+      <button onclick="deleteCafeAcc(${idx})" style="width:18px;height:18px;border-radius:50%;border:none;background:transparent;color:var(--tx3);cursor:pointer;font-size:12px;flex-shrink:0;opacity:.4" onmouseover="this.style.opacity=1;this.style.color='#c0403a'" onmouseout="this.style.opacity=.4;this.style.color='var(--tx3)'">✕</button>
+    `;
+    list.appendChild(row);
+  });
+  // 수입 합계도 갱신
+  updateInc();
+}
+
+function toggleCafe(idx,key){
+  cafeAccounts[idx][key]=!cafeAccounts[idx][key];
+  saveCafeAccounts();
+  renderCafeAccounts();
+}
+
+function addCafeAcc(){
+  const inp=document.getElementById('cafeAccInput');
+  const name=inp.value.trim();
+  if(!name)return;
+  cafeAccounts.push({name,post:false,c1:false,c2:false,c3:false});
+  saveCafeAccounts();
+  inp.value='';
+  renderCafeAccounts();
+  toast('✓ '+name+' 추가됐어요');
+}
+
+function deleteCafeAcc(idx){
+  const name=cafeAccounts[idx].name;
+  cafeAccounts.splice(idx,1);
+  saveCafeAccounts();
+  renderCafeAccounts();
+  toast(name+' 삭제됐어요');
+}
+
+// 초기 로드
+loadCafeAccounts();
+renderCafeAccounts();
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2000);}
 </script>
